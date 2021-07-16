@@ -4,6 +4,7 @@ import * as bCrypt from 'bcryptjs';
 import User from "../models/User";
 import jwt from 'jsonwebtoken';
 import Token from "../models/Token";
+import { Errors, Exception, ServerException } from "../error-handling/ErrorCodes";
 
 @injectable()
 export default class AuthService implements Service {
@@ -27,17 +28,20 @@ export default class AuthService implements Service {
 
     const user = await User.findOne({ email }).lean();
     
-    if(!user) throw new Error('TBD');
+    if(!user) throw new Exception(Errors.AUTH.INVALID_CREDS);
 
     const correctPassword = await bCrypt.compare(password, user.password);
 
-    if(!correctPassword) throw new Error('TBD');
+    if(!correctPassword) throw new Exception(Errors.AUTH.INVALID_CREDS);
 
     const token = jwt.sign({ data: 'foobar'}, user.password, { expiresIn: '5h' });
-
-    const newToken = new Token({ user, token, device: 'WEB' });
-
-    await newToken.save();
+    
+    try {
+      const newToken = new Token({ user, token, device: 'WEB' });
+      await newToken.save();
+    } catch(error) {
+      throw new ServerException(Errors.AUTH.INVALID_CREDS);
+    }
 
     return token;
   }

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import express, { Router } from 'express';
+import express, { NextFunction, Request, Response, Router } from 'express';
 import cors from 'cors';
 import { config } from 'dotenv';
 import * as core from 'express-serve-static-core';
@@ -11,6 +11,8 @@ import { TYPES } from './src/ioc/Types';
 import ControllerModule from './src/ioc/containers/ControllerModule';
 import { RouteType } from "./src/types/ControllerRoute";
 import ServiceModule from "./src/ioc/containers/ServiceModule";
+import { errorCatcher, errorHandler } from "./src/error-handling/ErrorHandler";
+import { Errors, Exception } from "./src/error-handling/ErrorCodes";
 
 const PORT = 8080;
 
@@ -59,12 +61,19 @@ class App {
           this.buildRoute(route, controller);
         }
       }
-    }
+    }  
+
+    this.router.use((_: Request, __: Response, next: NextFunction) => {
+      next(new Exception(Errors.NOT_FOUND));
+    });
+    
+    this.router.use(errorHandler);
+
     this.expressApp.use('/api', this.router);
   }
 
   private buildRoute(routeOptions: RouteType, controller: Controller): void {
-    this.router[routeOptions.httpMethod.toLowerCase()](`${controller.getApiPath()}${routeOptions.path}`, controller[routeOptions.methodName].bind(controller));
+    this.router[routeOptions.httpMethod.toLowerCase()](`${controller.getApiPath()}${routeOptions.path}`, errorCatcher(controller[routeOptions.methodName].bind(controller)));
   }
 
 }

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { inject, injectable, named } from "inversify";
+import { Errors, Exception } from "../../error-handling/ErrorCodes";
 import { TYPES } from "../../ioc/Types";
 import AuthService from "../../services/AuthService";
 import Controller from "../../types/Controller";
@@ -19,9 +20,9 @@ export default class AuthController implements Controller {
   public async register(req: Request, res: Response): Promise<void> {
     const { body: { username, email, password }} = req;
 
-    if(!username) throw new Error('TBD');
-    if(!email) throw new Error('TBD');
-    if(!password) throw new Error('TBD');
+    if(!username) throw new Exception(Errors.MISSING_PARAMS('username'));
+    if(!email) throw new Exception(Errors.MISSING_PARAMS('email'));
+    if(!password) throw new Exception(Errors.MISSING_PARAMS('password'));
 
     await this.authService.registerUser({ username, email, password });
 
