@@ -1,5 +1,5 @@
 {
-  "name": "crypts-and-lizards-backend",
+  "name": "personal-backend-boilerplate",
   "version": "1.0.0",
   "description": "",
   "main": "App.js",
@@ -8,9 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules App.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["Node", "Typescript", "Backend"],
+  "author": "Lendruk (Tiago)",
+  "license": "MIT",
   "dependencies": {
     "@types/bcryptjs": "^2.4.2",
     "bcryptjs": "^2.4.3",
