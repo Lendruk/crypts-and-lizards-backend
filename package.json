@@ -1,5 +1,5 @@
 {
-  "name": "personal-backend-boilerplate",
+  "name": "crypts-and-lizards-backend",
   "version": "1.0.0",
   "description": "",
   "main": "App.js",
@@ -8,7 +8,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules App.ts"
   },
-  "keywords": ["Node", "Typescript", "Backend"],
+  "keywords": [
+    "Node",
+    "Typescript",
+    "Backend"
+  ],
   "author": "Lendruk (Tiago)",
   "license": "MIT",
   "dependencies": {
@@ -25,6 +29,7 @@
   "devDependencies": {
     "@types/express": "^4.17.12",
     "@types/jsonwebtoken": "^8.5.4",
+    "@types/xml2json": "^0.11.4",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",
@@ -32,6 +37,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "ts-node-dev": "^1.1.8",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "xml2json": "^0.12.0"
   }
 }

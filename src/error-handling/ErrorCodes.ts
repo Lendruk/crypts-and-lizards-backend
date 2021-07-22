@@ -31,8 +31,20 @@ export const Errors = {
     httpCode: 404,
     message: "Resource not found",
   },
+  BAD_REQUEST: {
+    httpCode: 400,
+    message: "Bad request",
+  },
+  RESOURCE_NOT_FOUND: {
+    httpCode: 404,
+    message: "The requested resource was not found"
+  },
   MISSING_PARAMS: (param) => ({
     httpCode: 400,
     message: `Missing parameter ${param}`
   }),
+  SERVER_ERROR: {
+    httpCode: 500,
+    message: "Internal Server Error"
+  }
 };

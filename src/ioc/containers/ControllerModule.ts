@@ -2,6 +2,8 @@ import { Container, ContainerModule, interfaces } from "inversify";
 import { TYPES } from "../Types";
 import Controller from "../../types/Controller";
 import AuthController from "../../controllers/Auth/AuthController";
+import DebugController from "../../controllers/Auth/DebugController";
+import ItemController from "../../controllers/Auth/ItemController";
 
 class ControllerModule {
   private module: ContainerModule;
@@ -9,6 +11,8 @@ class ControllerModule {
   constructor() {
     this.module = new ContainerModule((bind: interfaces.Bind) => {
       bind<Controller>(TYPES.Controller).to(AuthController).inSingletonScope().whenTargetNamed("AuthController");
+      bind<Controller>(TYPES.Controller).to(ItemController).inSingletonScope().whenTargetNamed("ItemController");
+      bind<Controller>(TYPES.Controller).to(DebugController).inSingletonScope().whenTargetNamed("DebugController");
     });
   }
 
