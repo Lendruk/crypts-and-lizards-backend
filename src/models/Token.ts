@@ -1,9 +1,11 @@
 import { model, Schema } from "mongoose";
+import { ObjectId } from "../utils/ObjectId";
 import User from "./User";
 
 type Device = 'WEB' | 'MOBILE';
 
 export interface Token {
+  _id: ObjectId;
   user: User;
   token: string;
   device: Device;

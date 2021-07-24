@@ -66,6 +66,7 @@ export default class AuthService implements Service {
       return true;
     } catch(error) {
       console.log(error);
+      await Token.deleteOne({ _id: tokenObj._id});
       return false;
     }
   }

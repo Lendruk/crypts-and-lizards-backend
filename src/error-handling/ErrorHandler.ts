@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { ExpressFunction } from "../types/ExpressFunction";
 import { Exception } from "./ErrorCodes";
 
 export function errorHandler(error: Exception, _: Request, response: Response, __: NextFunction)

@@ -1,3 +1,5 @@
+import Logger from "../utils/Logger";
+
 export class Exception extends Error {
   httpCode: number;
 
@@ -25,6 +27,10 @@ export const Errors = {
     INVALID_CREDS: {
       httpCode: 400,
       message: "Email or password provided are wrong"
+    },
+    INVALID_TOKEN: {
+      httpCode: 401,
+      message: "Invalid token"
     }
   },
   NOT_FOUND: {

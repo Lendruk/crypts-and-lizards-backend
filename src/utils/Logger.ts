@@ -1,4 +1,4 @@
-class Logger {
+export default class Logger {
 
   private static logMessage(message: string): void {
     console.log(message);

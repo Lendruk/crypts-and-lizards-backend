@@ -13,6 +13,7 @@ import { RouteType } from "./src/types/ControllerRoute";
 import ServiceModule from "./src/ioc/containers/ServiceModule";
 import { errorCatcher, errorHandler } from "./src/error-handling/ErrorHandler";
 import { Errors, Exception } from "./src/error-handling/ErrorCodes";
+import { ExpressFunction } from "./src/types/ExpressFunction";
 
 const PORT = 8080;
 
@@ -58,7 +59,14 @@ class App {
         const routes = Reflect.getMetadata("routes", controller.constructor) as RouteType[];
 
         for(const route of routes) {
-          this.buildRoute(route, controller);
+          const middyMap = Reflect.getMetadata("middleware", controller.constructor) as Map<string | symbol, ExpressFunction[]>;
+          let middyFunctions: ExpressFunction[] = [];
+          if(middyMap && middyMap.has(route.methodName)) {
+           middyFunctions = middyMap.get(route.methodName)!;
+          }
+
+          
+          this.buildRoute(route, controller, middyFunctions);
         }
       }
     }  
@@ -72,8 +80,10 @@ class App {
     this.expressApp.use('/api', this.router);
   }
 
-  private buildRoute(routeOptions: RouteType, controller: Controller): void {
-    this.router[routeOptions.httpMethod.toLowerCase()](`${controller.getApiPath()}${routeOptions.path}`, errorCatcher(controller[routeOptions.methodName].bind(controller)));
+  private buildRoute(routeOptions: RouteType, controller: Controller, middleware: ExpressFunction[] = []): void {
+    this.router[routeOptions.httpMethod.toLowerCase()](`${controller.getApiPath()}${routeOptions.path}`, 
+    ...middleware.map(middy => errorCatcher(middy)),
+    errorCatcher(controller[routeOptions.methodName].bind(controller)));
   }
 
 }

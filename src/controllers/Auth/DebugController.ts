@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { injectable } from "inversify";
 import Controller from "../../types/Controller";
-import { Post } from "../../types/ControllerRoute";
+import { Get, Post } from "../../types/ControllerRoute";
+import { RequireAuth } from "../../types/RequireAuth";
 import { convertItems, createBaseCurrencies } from "../../utils/convertItems";
 
 @injectable()
@@ -31,6 +32,13 @@ export default class DebugController implements Controller {
     } catch(error) {
       console.log(error);
     }
+    res.status(200).send();
+  }
+
+  @Get('/testAuth')
+  @RequireAuth()
+  public async testAuth(req: Request, res: Response): Promise<void> {
+
     res.status(200).send();
   }
 }
