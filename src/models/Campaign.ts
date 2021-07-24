@@ -11,10 +11,8 @@ interface Campaign {
 const CampaignSchema = new Schema<Campaign>({
   title: { type: String },
   description: { type: String },
-  assets: {
-    items: [{ type: Schema.Types.ObjectId, ref: 'Item' }],
-    spells: [{ type: Schema.Types.ObjectId, ref: 'Spell'}]
-  },
+  forkedFrom: { type: Schema.Types.ObjectId, ref: 'Campaign' },
+  assetPacks: [{ type: Schema.Types.ObjectId, ref: 'AssetPack' }]
 });
 
 const Campaign = model<Campaign>('Campaign', CampaignSchema);

@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
-import Currency from "../models/Currency";
+import Currency from "../models/Items/Currency";
+import Item from "../models/Items/Item";
 import { Service } from "../types/Service";
 import { ObjectId } from '../utils/ObjectId';
 
