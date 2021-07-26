@@ -5,8 +5,8 @@ interface Versioning {
 }
 
 const VersioningSchema = new Schema<Versioning>({
-  defaultItemsVer: { type: Number }
+  defaultItemsVer: { type: Number },
 });
 
-const Versioning = model<Versioning>('Versioning', VersioningSchema);
+const Versioning = model<Versioning>("Versioning", VersioningSchema);
 export default Versioning;

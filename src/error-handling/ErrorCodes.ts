@@ -3,7 +3,7 @@ import Logger from "../utils/Logger";
 export class Exception extends Error {
   httpCode: number;
 
-  constructor(params: { httpCode: number, message: string }) {
+  constructor(params: { httpCode: number; message: string }) {
     const { httpCode, message } = params;
     super(message);
     this.message = message;
@@ -12,9 +12,9 @@ export class Exception extends Error {
 }
 
 export class ServerException extends Exception {
-  constructor(params: { httpCode: number, message: string }) {
+  constructor(params: { httpCode: number; message: string }) {
     super(params);
-    Logger.error(this.message);    
+    Logger.error(this.message);
   }
 }
 
@@ -26,12 +26,12 @@ export const Errors = {
     },
     INVALID_CREDS: {
       httpCode: 400,
-      message: "Email or password provided are wrong"
+      message: "Email or password provided are wrong",
     },
     INVALID_TOKEN: {
       httpCode: 401,
-      message: "Invalid token"
-    }
+      message: "Invalid token",
+    },
   },
   NOT_FOUND: {
     httpCode: 404,
@@ -43,14 +43,14 @@ export const Errors = {
   },
   RESOURCE_NOT_FOUND: {
     httpCode: 404,
-    message: "The requested resource was not found"
+    message: "The requested resource was not found",
   },
   MISSING_PARAMS: (param) => ({
     httpCode: 400,
-    message: `Missing parameter ${param}`
+    message: `Missing parameter ${param}`,
   }),
   SERVER_ERROR: {
     httpCode: 500,
-    message: "Internal Server Error"
-  }
+    message: "Internal Server Error",
+  },
 };

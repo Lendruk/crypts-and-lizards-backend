@@ -20,14 +20,14 @@ interface Item<T> {
   properties: T;
 }
 
-const ItemSchema = new Schema<Item<void>>({
+const ItemSchema = new Schema<Item<any>>({
   name: { type: String },
   weight: { type: Number, default: 0 },
   value: { type: Number, default: 0 },
-  currency: { type: Schema.Types.ObjectId, ref: 'Currency', default: null },
-  createdBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },
-  category: { type: Schema.Types.ObjectId, ref: 'Category' }
+  currency: { type: Schema.Types.ObjectId, ref: "Currency", default: null },
+  createdBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
+  category: { type: Schema.Types.ObjectId, ref: "Category" },
 });
 
-const Item = model<Item<void>>('Item', ItemSchema);
+const Item = model<Item<any>>("Item", ItemSchema);
 export default Item;

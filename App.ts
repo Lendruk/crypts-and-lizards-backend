@@ -1,14 +1,14 @@
 import "reflect-metadata";
-import express, { NextFunction, Request, Response, Router } from 'express';
-import cors from 'cors';
-import { config } from 'dotenv';
-import * as core from 'express-serve-static-core';
-import Controller from './src/types/Controller';
+import express, { NextFunction, Request, Response, Router } from "express";
+import cors from "cors";
+import { config } from "dotenv";
+import * as core from "express-serve-static-core";
+import Controller from "./src/types/Controller";
 config();
-import './src/database/Database';
-import { Container } from 'inversify';
-import { TYPES } from './src/ioc/Types';
-import ControllerModule from './src/ioc/containers/ControllerModule';
+import "./src/database/Database";
+import { Container } from "inversify";
+import { TYPES } from "./src/ioc/Types";
+import ControllerModule from "./src/ioc/containers/ControllerModule";
 import { RouteType } from "./src/types/ControllerRoute";
 import ServiceModule from "./src/ioc/containers/ServiceModule";
 import { errorCatcher, errorHandler } from "./src/error-handling/ErrorHandler";
@@ -46,46 +46,46 @@ class App {
   }
 
   private startServices(): void {
-    Promise.all([
-      ServiceModule.start(this.container),
-      ControllerModule.start(this.container)
-    ]);
+    Promise.all([ServiceModule.start(this.container), ControllerModule.start(this.container)]);
   }
 
   private buildRoutes(): void {
     const controllers = this.container.getAll<Controller>(TYPES.Controller);
-    for(const controller of controllers) {
-      if(Reflect.hasMetadata("routes", controller.constructor)) {
+    for (const controller of controllers) {
+      if (Reflect.hasMetadata("routes", controller.constructor)) {
         const routes = Reflect.getMetadata("routes", controller.constructor) as RouteType[];
 
-        for(const route of routes) {
-          const middyMap = Reflect.getMetadata("middleware", controller.constructor) as Map<string | symbol, ExpressFunction[]>;
+        for (const route of routes) {
+          const middyMap = Reflect.getMetadata("middleware", controller.constructor) as Map<
+            string | symbol,
+            ExpressFunction[]
+          >;
           let middyFunctions: ExpressFunction[] = [];
-          if(middyMap && middyMap.has(route.methodName)) {
-           middyFunctions = middyMap.get(route.methodName)!;
+          if (middyMap && middyMap.has(route.methodName)) {
+            middyFunctions = middyMap.get(route.methodName)!;
           }
 
-          
           this.buildRoute(route, controller, middyFunctions);
         }
       }
-    }  
+    }
 
     this.router.use((_: Request, __: Response, next: NextFunction) => {
       next(new Exception(Errors.NOT_FOUND));
     });
-    
+
     this.router.use(errorHandler);
 
-    this.expressApp.use('/api', this.router);
+    this.expressApp.use("/api", this.router);
   }
 
   private buildRoute(routeOptions: RouteType, controller: Controller, middleware: ExpressFunction[] = []): void {
-    this.router[routeOptions.httpMethod.toLowerCase()](`${controller.getApiPath()}${routeOptions.path}`, 
-    ...middleware.map(middy => errorCatcher(middy)),
-    errorCatcher(controller[routeOptions.methodName].bind(controller)));
+    this.router[routeOptions.httpMethod.toLowerCase()](
+      `${controller.getApiPath()}${routeOptions.path}`,
+      ...middleware.map((middy) => errorCatcher(middy)),
+      errorCatcher(controller[routeOptions.methodName].bind(controller))
+    );
   }
-
 }
 const app = new App();
 app.listen();

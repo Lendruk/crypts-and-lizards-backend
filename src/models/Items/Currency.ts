@@ -14,5 +14,5 @@ const CurrencySchema = new Schema<Currency>({
   description: { type: String },
 });
 
-const Currency = model<Currency>('Currency', CurrencySchema);
+const Currency = model<Currency>("Currency", CurrencySchema);
 export default Currency;

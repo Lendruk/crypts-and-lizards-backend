@@ -1,21 +1,21 @@
-import * as xml2json from 'xml2json';
-import * as fs from 'fs/promises';
-import Currency from '../models/Items/Currency';
+import * as xml2json from "xml2json";
+import * as fs from "fs/promises";
+import Currency from "../models/Items/Currency";
 
-export async function convertItems() {
-  const xmlInput = await fs.readFile('./src/resources/DnD-Data/Items/Mundane-Items.xml');
+export async function convertItems(): Promise<void> {
+  const xmlInput = await fs.readFile("./src/resources/DnD-Data/Items/Mundane-Items.xml");
 
   const jsonOutput = xml2json.toJson(xmlInput);
-  fs.writeFile('./test.json', jsonOutput);
+  fs.writeFile("./test.json", jsonOutput);
 }
 
-export async function createBaseCurrencies() {
+export async function createBaseCurrencies(): Promise<void> {
   const currencies = [
     {
-      "name": "Copper",
-      "shortName": "cp",
-      "weight": "0.02",
-      "description": [
+      name: "Copper",
+      shortName: "cp",
+      weight: "0.02",
+      description: [
         "Common coins come in several different denominations based on the relative worth of the metal from which they are made. The three most common coins are the gold piece (gp), the silver piece (sp), and the copper piece (cp).",
         "\n",
         "With one gold piece, a character can buy a belt pouch, 50 feet of good rope, or a goat. A skilled (but not exceptional) artisan can earn one gold piece a day. The gold piece is the standard unit of measure for wealth, even if the coin itself is not commonly used. When merchants discuss deals that involve goods or services worth hundreds or thousands of gold pieces, the transactions don't usually involve the exchange of individual coins. Rather, the gold piece is a standard measure of value, and the actual exchange is in gold bars, letters of credit, or valuable goods.",
@@ -28,14 +28,14 @@ export async function createBaseCurrencies() {
         "\n",
         "A standard coin weighs about a third of an ounce, so fifty coins weigh a pound.",
         "\n",
-        "Source: Player's Handbook, page 143"
-      ]
+        "Source: Player's Handbook, page 143",
+      ],
     },
     {
-      "name": "Electrum",
-      "shortName": "ep",
-      "weight": "0.02",
-      "description": [
+      name: "Electrum",
+      shortName: "ep",
+      weight: "0.02",
+      description: [
         "Common coins come in several different denominations based on the relative worth of the metal from which they are made. The three most common coins are the gold piece (gp), the silver piece (sp), and the copper piece (cp).",
         "\n",
         "With one gold piece, a character can buy a belt pouch, 50 feet of good rope, or a goat. A skilled (but not exceptional) artisan can earn one gold piece a day. The gold piece is the standard unit of measure for wealth, even if the coin itself is not commonly used. When merchants discuss deals that involve goods or services worth hundreds or thousands of gold pieces, the transactions don't usually involve the exchange of individual coins. Rather, the gold piece is a standard measure of value, and the actual exchange is in gold bars, letters of credit, or valuable goods.",
@@ -48,14 +48,14 @@ export async function createBaseCurrencies() {
         "\n",
         "A standard coin weighs about a third of an ounce, so fifty coins weigh a pound.",
         "\n",
-        "Source: Player's Handbook, page 143"
-      ]
+        "Source: Player's Handbook, page 143",
+      ],
     },
     {
-      "name": "Gold",
-      "shortName": "gp",
-      "weight": "0.02",
-      "description": [
+      name: "Gold",
+      shortName: "gp",
+      weight: "0.02",
+      description: [
         "Common coins come in several different denominations based on the relative worth of the metal from which they are made. The three most common coins are the gold piece (gp), the silver piece (sp), and the copper piece (cp).",
         "\n",
         "With one gold piece, a character can buy a belt pouch, 50 feet of good rope, or a goat. A skilled (but not exceptional) artisan can earn one gold piece a day. The gold piece is the standard unit of measure for wealth, even if the coin itself is not commonly used. When merchants discuss deals that involve goods or services worth hundreds or thousands of gold pieces, the transactions don't usually involve the exchange of individual coins. Rather, the gold piece is a standard measure of value, and the actual exchange is in gold bars, letters of credit, or valuable goods.",
@@ -68,14 +68,14 @@ export async function createBaseCurrencies() {
         "\n",
         "A standard coin weighs about a third of an ounce, so fifty coins weigh a pound.",
         "\n",
-        "Source: Player's Handbook, page 143"
-      ]
+        "Source: Player's Handbook, page 143",
+      ],
     },
     {
-      "name": "Platinum",
-      "shortName": "pp",
-      "weight": "0.02",
-      "description": [
+      name: "Platinum",
+      shortName: "pp",
+      weight: "0.02",
+      description: [
         "Common coins come in several different denominations based on the relative worth of the metal from which they are made. The three most common coins are the gold piece (gp), the silver piece (sp), and the copper piece (cp).",
         "\n",
         "With one gold piece, a character can buy a belt pouch, 50 feet of good rope, or a goat. A skilled (but not exceptional) artisan can earn one gold piece a day. The gold piece is the standard unit of measure for wealth, even if the coin itself is not commonly used. When merchants discuss deals that involve goods or services worth hundreds or thousands of gold pieces, the transactions don't usually involve the exchange of individual coins. Rather, the gold piece is a standard measure of value, and the actual exchange is in gold bars, letters of credit, or valuable goods.",
@@ -88,14 +88,14 @@ export async function createBaseCurrencies() {
         "\n",
         "A standard coin weighs about a third of an ounce, so fifty coins weigh a pound.",
         "\n",
-        "Source: Player's Handbook, page 143"
-      ]
+        "Source: Player's Handbook, page 143",
+      ],
     },
     {
-      "name": "Silver",
-      "shortName": "sp",
-      "weight": "0.02",
-      "description": [
+      name: "Silver",
+      shortName: "sp",
+      weight: "0.02",
+      description: [
         "Common coins come in several different denominations based on the relative worth of the metal from which they are made. The three most common coins are the gold piece (gp), the silver piece (sp), and the copper piece (cp).",
         "\n",
         "With one gold piece, a character can buy a belt pouch, 50 feet of good rope, or a goat. A skilled (but not exceptional) artisan can earn one gold piece a day. The gold piece is the standard unit of measure for wealth, even if the coin itself is not commonly used. When merchants discuss deals that involve goods or services worth hundreds or thousands of gold pieces, the transactions don't usually involve the exchange of individual coins. Rather, the gold piece is a standard measure of value, and the actual exchange is in gold bars, letters of credit, or valuable goods.",
@@ -108,10 +108,12 @@ export async function createBaseCurrencies() {
         "\n",
         "A standard coin weighs about a third of an ounce, so fifty coins weigh a pound.",
         "\n",
-        "Source: Player's Handbook, page 143"
-      ]
+        "Source: Player's Handbook, page 143",
+      ],
     },
   ];
 
-  await Currency.insertMany(currencies.map(currency => ({ ...currency, description: currency.description.join('\n')})));
+  await Currency.insertMany(
+    currencies.map((currency) => ({ ...currency, description: currency.description.join("\n") }))
+  );
 }

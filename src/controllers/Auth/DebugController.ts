@@ -7,15 +7,17 @@ import { convertItems, createBaseCurrencies } from "../../utils/convertItems";
 
 @injectable()
 export default class DebugController implements Controller {
-  private static readonly API_PATH = '/debug';
+  private static readonly API_PATH = "/debug";
 
-  public start(): void {}
+  public start(): void {
+    /* */
+  }
 
-  @Post('/convertItems')
+  @Post("/convertItems")
   public async mapItems(req: Request, res: Response): Promise<void> {
     try {
       await convertItems();
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
     res.status(200).send();
@@ -25,20 +27,19 @@ export default class DebugController implements Controller {
     return DebugController.API_PATH;
   }
 
-  @Post('/createBaseCurrencies')
+  @Post("/createBaseCurrencies")
   public async createBaseCurrencies(req: Request, res: Response): Promise<void> {
     try {
       await createBaseCurrencies();
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
     res.status(200).send();
   }
 
-  @Get('/testAuth')
+  @Get("/testAuth")
   @RequireAuth()
   public async testAuth(req: Request, res: Response): Promise<void> {
-
     res.status(200).send();
   }
 }

@@ -1,3 +1,3 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-export class ObjectId extends mongoose.Types.ObjectId {};
+export class ObjectId extends mongoose.Types.ObjectId {}

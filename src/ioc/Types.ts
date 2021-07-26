@@ -1,4 +1,4 @@
 export const TYPES = {
-  Controller: Symbol('Controller'),
-  Service: Symbol('Service')
-}
+  Controller: Symbol("Controller"),
+  Service: Symbol("Service"),
+};

@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import Permission from './Permission';
+import Permission from "./Permission";
 
 interface Role {
   name: string;
@@ -8,8 +8,8 @@ interface Role {
 
 const RoleSchema = new Schema<Role>({
   name: { type: String },
-  permissions: [{ type: Schema.Types.ObjectId, ref: 'Permission' }]
+  permissions: [{ type: Schema.Types.ObjectId, ref: "Permission" }],
 });
 
-const Role = model<Role>('Role', RoleSchema);
+const Role = model<Role>("Role", RoleSchema);
 export default Role;

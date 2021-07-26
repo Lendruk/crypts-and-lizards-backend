@@ -1,5 +1,4 @@
-
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export type RouteOptions = {
   [index: string]: any;
@@ -11,7 +10,6 @@ export type RouteOptions = {
 
   requireToken?: boolean;
 };
-
 
 export interface RouteType {
   path: string;
@@ -51,8 +49,8 @@ const ControllerRoute = (method: HttpMethod) => {
   };
 };
 
-export const Get = ControllerRoute('GET');
-export const Post = ControllerRoute('POST');
-export const Put = ControllerRoute('PUT');
-export const Patch = ControllerRoute('PATCH');
-export const Delete = ControllerRoute('DELETE');
+export const Get = ControllerRoute("GET");
+export const Post = ControllerRoute("POST");
+export const Put = ControllerRoute("PUT");
+export const Patch = ControllerRoute("PATCH");
+export const Delete = ControllerRoute("DELETE");
