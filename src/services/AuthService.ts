@@ -6,6 +6,14 @@ import jwt from "jsonwebtoken";
 import Token from "../models/Token";
 import { Errors, Exception, ServerException } from "../error-handling/ErrorCodes";
 
+type LoginReturns = {
+  accessToken: string;
+  user: {
+    username: string;
+    email?: string;
+  };
+};
+
 @injectable()
 export default class AuthService implements Service {
   public async start(): Promise<void> {
@@ -16,14 +24,18 @@ export default class AuthService implements Service {
     const { username, email, password } = options;
     const hashedPassword = await this.generateHash(password);
 
+    if (await User.findOne({ $or: [{ username }, { email }] })) {
+      throw new ServerException(Errors.BAD_REQUEST);
+    }
+
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
   }
 
-  public async loginUser(options: { email: string; password: string }): Promise<string> {
-    const { email, password } = options;
+  public async loginUser(options: { username: string; password: string }): Promise<LoginReturns> {
+    const { username, password } = options;
 
-    const user = await User.findOne({ email }).lean();
+    const user = await User.findOne({ username }).lean();
 
     if (!user) throw new Exception(Errors.AUTH.INVALID_CREDS);
 
@@ -40,7 +52,7 @@ export default class AuthService implements Service {
       throw new ServerException(Errors.AUTH.INVALID_CREDS);
     }
 
-    return token;
+    return { accessToken: token, user: { username: user.username, email: user.email || undefined } };
   }
 
   private async generateHash(password: string): Promise<string> {

@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { injectable } from "inversify";
-import Controller from "../../types/Controller";
-import { Delete, Put } from "../../types/ControllerRoute";
-import AuthService from "../../services/AuthService";
-import { Errors, Exception } from "../../error-handling/ErrorCodes";
-import User from "../../models/User";
-import Token from "../../models/Token";
+import Controller from "../types/Controller";
+import { Delete, Put } from "../types/ControllerRoute";
+import AuthService from "../services/AuthService";
+import { Errors, Exception } from "../error-handling/ErrorCodes";
+import User from "../models/User";
+import Token from "../models/Token";
 
 @injectable()
 export default class UserController implements Controller {

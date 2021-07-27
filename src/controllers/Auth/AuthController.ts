@@ -34,12 +34,12 @@ export default class AuthController implements Controller {
   @Post("/login")
   public async login(req: Request, res: Response): Promise<void> {
     const {
-      body: { email, password },
+      body: { username, password },
     } = req;
 
-    const token = await this.authService.loginUser({ email, password });
+    const session = await this.authService.loginUser({ username, password });
 
-    res.status(200).json({ token });
+    res.status(200).json({ ...session });
   }
 
   @Post("/verifyToken")

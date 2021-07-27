@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { inject, injectable, named } from "inversify";
-import { Errors, ServerException } from "../../error-handling/ErrorCodes";
-import { TYPES } from "../../ioc/Types";
-import ItemService from "../../services/ItemService";
-import Controller from "../../types/Controller";
-import { Get } from "../../types/ControllerRoute";
+import { Errors, ServerException } from "../error-handling/ErrorCodes";
+import { TYPES } from "../ioc/Types";
+import ItemService from "../services/ItemService";
+import Controller from "../types/Controller";
+import { Get } from "../types/ControllerRoute";
 
 @injectable()
 export default class ItemController implements Controller {

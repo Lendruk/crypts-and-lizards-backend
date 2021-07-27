@@ -26,7 +26,7 @@ export const Errors = {
     },
     INVALID_CREDS: {
       httpCode: 400,
-      message: "Email or password provided are wrong",
+      message: "Username or password provided are wrong",
     },
     INVALID_TOKEN: {
       httpCode: 401,

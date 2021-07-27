@@ -2,8 +2,8 @@ import { Container, ContainerModule, interfaces } from "inversify";
 import { TYPES } from "../Types";
 import Controller from "../../types/Controller";
 import AuthController from "../../controllers/Auth/AuthController";
-import DebugController from "../../controllers/Auth/DebugController";
-import ItemController from "../../controllers/Auth/ItemController";
+import DebugController from "../../controllers/DebugController";
+import ItemController from "../../controllers/ItemController";
 
 class ControllerModule {
   private module: ContainerModule;
