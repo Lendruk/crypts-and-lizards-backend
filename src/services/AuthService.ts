@@ -55,28 +55,34 @@ export default class AuthService implements Service {
     return { accessToken: token, user: { username: user.username, email: user.email || undefined } };
   }
 
+  public async logoutUser(token: string): Promise<void> {
+    if (await AuthService.verifyToken(token)) {
+      await Token.deleteOne({ token });
+    }
+  }
+
   private async generateHash(password: string): Promise<string> {
     const salt = await bCrypt.genSalt(12);
     const hash = await bCrypt.hash(password, salt);
     return hash;
   }
 
-  static async verifyToken(token: string): Promise<boolean> {
+  static async verifyToken(token: string): Promise<User | undefined> {
     const tokenObj = await Token.findOne({ token }).lean();
 
-    if (!tokenObj) return false;
+    if (!tokenObj) return undefined;
 
     const user = await User.findOne({ _id: tokenObj.user });
 
-    if (!user) return false;
+    if (!user) return undefined;
 
     try {
       jwt.verify(token, user.password);
-      return true;
+      return user;
     } catch (error) {
       console.log(error);
       await Token.deleteOne({ _id: tokenObj._id });
-      return false;
+      return undefined;
     }
   }
 }

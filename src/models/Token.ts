@@ -19,5 +19,6 @@ const TokenSchema = new Schema<Token>(
   },
   { timestamps: { createdAt: "_created" } }
 );
+TokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
 
 export default model<Token>("Token", TokenSchema);

@@ -1,4 +1,5 @@
 import { Container, ContainerModule, interfaces } from "inversify";
+import AssetService from "../../services/AssetService";
 import AuthService from "../../services/AuthService";
 import ItemService from "../../services/ItemService";
 import { Service } from "../../types/Service";
@@ -11,6 +12,7 @@ class ServiceModule {
     this.module = new ContainerModule((bind: interfaces.Bind) => {
       bind<Service>(TYPES.Service).toConstantValue(new AuthService()).whenTargetNamed("AuthService");
       bind<Service>(TYPES.Service).to(ItemService).inSingletonScope().whenTargetNamed("ItemService");
+      bind<Service>(TYPES.Service).to(AssetService).inSingletonScope().whenTargetNamed("AssetService");
     });
   }
 

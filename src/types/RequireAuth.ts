@@ -1,9 +1,11 @@
-import { NextFunction, Request, Response } from "express-serve-static-core";
+import { NextFunction, Response } from "express-serve-static-core";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
+import User from "../models/User";
 import AuthService from "../services/AuthService";
 import { ExpressFunction } from "./ExpressFunction";
+import { ExpressRequest } from "./ExpressRequest";
 
-const checkToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const checkToken = async (req: ExpressRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { authorization } = req.headers;
     if (!authorization) throw new ServerException(Errors.AUTH.NO_TOKEN);
@@ -13,10 +15,12 @@ const checkToken = async (req: Request, res: Response, next: NextFunction): Prom
     if (splitToken[0] !== "Bearer" || splitToken[1] == null || splitToken[1] == "null")
       throw new ServerException(Errors.AUTH.INVALID_TOKEN);
 
-    const isValid = await AuthService.verifyToken(splitToken[1]);
+    const foundUser = await AuthService.verifyToken(splitToken[1]);
 
-    if (!isValid) {
+    if (!foundUser) {
       throw new ServerException(Errors.AUTH.INVALID_TOKEN);
+    } else {
+      req.user = foundUser;
     }
   } catch (err) {
     throw err;

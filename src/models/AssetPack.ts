@@ -29,8 +29,8 @@ const AssetSchema = new Schema<Asset>({
 const AssetPackSchema = new Schema<AssetPack>(
   {
     title: { type: String },
-    description: { type: String },
-    assets: { type: AssetSchema },
+    description: { type: String, default: "" },
+    assets: { type: AssetSchema, default: null },
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },
     privacy: { type: String, enum: ["PRIVATE", "PUBLIC", "TRUSTED"], default: "PRIVATE" },
   },

@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { inject, injectable, named } from "inversify";
-import { Errors, Exception } from "../../error-handling/ErrorCodes";
+import { Errors, Exception, ServerException } from "../../error-handling/ErrorCodes";
 import { TYPES } from "../../ioc/Types";
 import AuthService from "../../services/AuthService";
 import Controller from "../../types/Controller";
 import { Post } from "../../types/ControllerRoute";
+import { ExpressRequest } from "../../types/ExpressRequest";
+import { RequireAuth } from "../../types/RequireAuth";
 
 @injectable()
 export default class AuthController implements Controller {
@@ -40,6 +42,23 @@ export default class AuthController implements Controller {
     const session = await this.authService.loginUser({ username, password });
 
     res.status(200).json({ ...session });
+  }
+
+  @Post("/logout")
+  @RequireAuth()
+  public async logout(req: ExpressRequest, res: Response): Promise<void> {
+    const {
+      headers: { authorization },
+    } = req;
+    try {
+      const token = authorization!.split(" ")[1];
+
+      await this.authService.logoutUser(token);
+    } catch (error) {
+      throw new ServerException(Errors.SERVER_ERROR);
+    }
+
+    res.status(200).send();
   }
 
   @Post("/verifyToken")

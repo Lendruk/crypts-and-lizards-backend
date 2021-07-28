@@ -1,3 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
+import { ExpressRequest } from "./ExpressRequest";
 
-export type ExpressFunction = (req: Request, res: Response, next: NextFunction) => void;
+export type ExpressFunction = (req: ExpressRequest, res: Response, next: NextFunction) => void;
