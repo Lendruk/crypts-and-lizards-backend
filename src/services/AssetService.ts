@@ -17,7 +17,6 @@ export default class AssetService implements Service {
 
   public async getMyAssets(user: User): Promise<AssetPack[]> {
     try {
-      console.log(user);
       const assets = await AssetPack.find({ createdBy: user }).lean();
       return assets;
     } catch (error) {
@@ -40,10 +39,10 @@ export default class AssetService implements Service {
     return assetPack;
   }
 
-  public async createAssetPack(options: { title: string; creator: User }): Promise<AssetPack> {
-    const { title, creator } = options;
+  public async createAssetPack(options: { title: string; description?: string; creator: User }): Promise<AssetPack> {
+    const { title, creator, description } = options;
     try {
-      const assetPack = new AssetPack({ title, createdBy: creator._id });
+      const assetPack = new AssetPack({ title, description: description || null, createdBy: creator._id });
       await assetPack.save();
 
       return assetPack;

@@ -47,13 +47,9 @@ export default class AuthController implements Controller {
   @Post("/logout")
   @RequireAuth()
   public async logout(req: ExpressRequest, res: Response): Promise<void> {
-    const {
-      headers: { authorization },
-    } = req;
     try {
-      const token = authorization!.split(" ")[1];
-
-      await this.authService.logoutUser(token);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await this.authService.logoutUser(req.accessToken!);
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR);
     }
@@ -62,9 +58,9 @@ export default class AuthController implements Controller {
   }
 
   @Post("/verifyToken")
-  public async test(req: Request, res: Response): Promise<void> {
-    const test = await AuthService.verifyToken(req.body.token);
-    res.json({ test });
+  @RequireAuth()
+  public async verifySession(req: Request, res: Response): Promise<void> {
+    res.json({ validSession: true }).send();
   }
 
   public getApiPath(): string {

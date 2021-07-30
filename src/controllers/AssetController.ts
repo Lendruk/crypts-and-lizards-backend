@@ -36,11 +36,11 @@ export default class AssetController implements Controller {
   public async createAssetPack(req: ExpressRequest, res: Response): Promise<void> {
     try {
       const {
-        body: { title },
+        body: { title, description },
         user,
       } = req;
 
-      const asset = await this.assetService.createAssetPack({ title, creator: user });
+      const asset = await this.assetService.createAssetPack({ title, description, creator: user });
 
       res.status(200).json(asset);
     } catch (error) {

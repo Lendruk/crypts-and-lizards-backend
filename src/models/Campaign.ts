@@ -1,11 +1,10 @@
 import { model, Schema } from "mongoose";
+import AssetPack from "./AssetPack";
 
 interface Campaign {
   title: string;
   description: string;
-  assets: {
-    items: Schema.Types.ObjectId[];
-  };
+  assetPacks: AssetPack[];
 }
 
 const CampaignSchema = new Schema<Campaign>({
