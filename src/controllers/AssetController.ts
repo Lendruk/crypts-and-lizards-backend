@@ -31,6 +31,16 @@ export default class AssetController implements Controller {
     }
   }
 
+  @Get("/:id")
+  @RequireAuth()
+  public async getAssetPack(req: ExpressRequest, res: Response): Promise<void> {
+    const {
+      params: { id },
+    } = req;
+    const asset = await this.assetService.getAssetPack(id);
+    res.status(200).json(asset);
+  }
+
   @Post("/")
   @RequireAuth()
   public async createAssetPack(req: ExpressRequest, res: Response): Promise<void> {
