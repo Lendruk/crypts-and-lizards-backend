@@ -5,6 +5,11 @@ interface User {
   username: string;
   email: string;
   password: string;
+  usedAssets: UsedAssets;
+}
+
+interface UsedAssets {
+  assetPacks: Types.ObjectId[];
 }
 
 const UserSchema = new Schema<User>(

@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose";
 import Category from "./Category";
 import Currency from "./Items/Currency";
 import Item from "./Items/Item";
+import Tag from "./Tag";
 import User from "./User";
 
 type AssetPackPrivacy = "PUBLIC" | "PRIVATE" | "TRUSTED";
@@ -18,6 +19,7 @@ interface AssetPack {
   assets: Asset;
   privacy: AssetPackPrivacy;
   createdBy: User;
+  tags: Tag[];
 }
 
 const AssetSchema = new Schema<Asset>({
@@ -29,6 +31,7 @@ const AssetSchema = new Schema<Asset>({
 const AssetPackSchema = new Schema<AssetPack>(
   {
     title: { type: String },
+    tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
     description: { type: String, default: "" },
     assets: { type: AssetSchema, default: null },
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },

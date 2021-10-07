@@ -5,6 +5,7 @@ import AuthController from "../../controllers/Auth/AuthController";
 import DebugController from "../../controllers/DebugController";
 import ItemController from "../../controllers/ItemController";
 import AssetController from "../../controllers/AssetController";
+import MapController from "../../controllers/MapController";
 
 class ControllerModule {
   private module: ContainerModule;
@@ -15,6 +16,7 @@ class ControllerModule {
       bind<Controller>(TYPES.Controller).to(ItemController).inSingletonScope().whenTargetNamed("ItemController");
       bind<Controller>(TYPES.Controller).to(DebugController).inSingletonScope().whenTargetNamed("DebugController");
       bind<Controller>(TYPES.Controller).to(AssetController).inSingletonScope().whenTargetNamed("AssetController");
+      bind<Controller>(TYPES.Controller).to(MapController).inSingletonScope().whenTargetNamed("MapController");
     });
   }
 

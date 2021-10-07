@@ -4,7 +4,7 @@ import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
 import AssetService from "../services/AssetService";
 import Controller from "../types/Controller";
-import { Delete, Get, Post } from "../types/ControllerRoute";
+import { Delete, Get, Post, Put } from "../types/ControllerRoute";
 import { ExpressRequest } from "../types/ExpressRequest";
 import { RequireAuth } from "../types/RequireAuth";
 
@@ -50,9 +50,26 @@ export default class AssetController implements Controller {
         user,
       } = req;
 
-      const asset = await this.assetService.createAssetPack({ title, description, creator: user });
+      const assetPack = await this.assetService.createAssetPack({ title, description, creator: user });
 
-      res.status(200).json(asset);
+      res.status(200).json(assetPack);
+    } catch (error) {
+      throw new ServerException(Errors.SERVER_ERROR);
+    }
+  }
+
+  @Put("/:id")
+  @RequireAuth()
+  public async updateAssetPack(req: ExpressRequest, res: Response): Promise<void> {
+    try {
+      const {
+        body: { title, description, tags },
+        params: { id },
+        user,
+      } = req;
+      const assetPack = await this.assetService.updateAssetPack(id, { title, description, tags }, user);
+
+      res.status(200).json(assetPack);
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR);
     }
