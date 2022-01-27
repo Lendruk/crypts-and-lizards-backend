@@ -3,6 +3,7 @@ import { inject, injectable, named } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
 import AssetService from "../services/AssetService";
+import MapService from "../services/MapService";
 import Controller from "../types/Controller";
 import { Delete, Get, Post, Put } from "../types/ControllerRoute";
 import { ExpressRequest } from "../types/ExpressRequest";
@@ -12,7 +13,10 @@ import { RequireAuth } from "../types/RequireAuth";
 export default class AssetController implements Controller {
   private static readonly API_PATH = "/assets";
 
-  constructor(@inject(TYPES.Service) @named("AssetService") private assetService: AssetService) {}
+  constructor(
+    @inject(TYPES.Service) @named("AssetService") private assetService: AssetService,
+    @inject(TYPES.Service) @named("MapService") private mapService: MapService
+  ) {}
 
   public start(): void {
     /* */
@@ -26,6 +30,21 @@ export default class AssetController implements Controller {
       // const assets = AssetPack.find({ $or: [{ privacy: "PUBLIC" }, { createdBy: user }] });
       const assets = await this.assetService.getMyAssets(user);
       res.status(200).json(assets);
+    } catch (error) {
+      throw new ServerException(Errors.SERVER_ERROR);
+    }
+  }
+
+  @Get("/:id/maps")
+  @RequireAuth()
+  public async getAssetPackMaps(req: ExpressRequest, res: Response): Promise<void> {
+    const {
+      user,
+      params: { id },
+    } = req;
+    try {
+      const maps = await this.mapService.getMapsForPack(user, id);
+      res.status(200).json(maps);
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR);
     }

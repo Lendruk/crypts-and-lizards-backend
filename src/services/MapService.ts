@@ -35,6 +35,27 @@ export default class MapService implements Service {
     return map;
   }
 
+  public async getMapsForPack(user: User, packId: string): Promise<GameMap[]> {
+    try {
+      return await GameMap.aggregate([
+        {
+          $match: {
+            createdBy: user._id,
+            assetPacks: new ObjectId(packId),
+          },
+        },
+        {
+          $project: {
+            title: 1,
+            _id: 1,
+          },
+        },
+      ]);
+    } catch (error) {
+      throw new ServerException(Errors.SERVER_ERROR);
+    }
+  }
+
   public async createMap(options: {
     title: string;
     description: string;
