@@ -6,6 +6,7 @@ import AuthService from "../services/AuthService";
 import { Errors, Exception } from "../error-handling/ErrorCodes";
 import User from "../models/User";
 import Token from "../models/Token";
+import { RequireAuth } from "../types/RequireAuth";
 
 @injectable()
 export default class UserController implements Controller {
@@ -41,8 +42,20 @@ export default class UserController implements Controller {
     res.status(200).send();
   }
 
+  @Delete("/self")
+  @RequireAuth()
+  public async deleteSelf(req: Request, res: Response): Promise<void> {
+    const {
+      body: { token },
+    } = req;
+    const tokenObj = await Token.findOne({ token });
+    await User.deleteOne({ _id: tokenObj!.user });
+  }
+
   @Delete("/:id")
-  public deleteUser(req: Request, res: Response) {}
+  public deleteUser(req: Request, res: Response) {
+
+  }
 
   @Put("/:id")
   public updateUser(req: Request, res: Response) {}

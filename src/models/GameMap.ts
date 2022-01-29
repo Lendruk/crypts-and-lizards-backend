@@ -1,4 +1,4 @@
-import { model, Schema, SchemaType } from "mongoose";
+import { model, Schema } from "mongoose";
 import { Vector2 } from "../types/Vector2";
 import { ObjectId } from "../utils/ObjectId";
 import Tag from "./Tag";
