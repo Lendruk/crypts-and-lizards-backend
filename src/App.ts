@@ -3,17 +3,17 @@ import express, { NextFunction, Request, Response, Router } from "express";
 import cors from "cors";
 import { config } from "dotenv";
 import * as core from "express-serve-static-core";
-import Controller from "./src/types/Controller";
+import Controller from "./types/Controller";
 config();
-import "./src/database/Database";
+import "./database/Database";
 import { Container } from "inversify";
-import { TYPES } from "./src/ioc/Types";
-import ControllerModule from "./src/ioc/containers/ControllerModule";
-import { RouteType } from "./src/types/ControllerRoute";
-import ServiceModule from "./src/ioc/containers/ServiceModule";
-import { errorCatcher, errorHandler } from "./src/error-handling/ErrorHandler";
-import { Errors, Exception } from "./src/error-handling/ErrorCodes";
-import { ExpressFunction } from "./src/types/ExpressFunction";
+import { TYPES } from "./ioc/Types";
+import ControllerModule from "./ioc/containers/ControllerModule";
+import { RouteType } from "./types/ControllerRoute";
+import ServiceModule from "./ioc/containers/ServiceModule";
+import { errorCatcher, errorHandler } from "./error-handling/ErrorHandler";
+import { Errors, Exception } from "./error-handling/ErrorCodes";
+import { ExpressFunction } from "./types/ExpressFunction";
 
 const PORT = 8080;
 
