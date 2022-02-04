@@ -3,3 +3,4 @@ package-lock.json
 .env
 DnDAppFiles/
 src/resources/DnD-Data/
+coverage

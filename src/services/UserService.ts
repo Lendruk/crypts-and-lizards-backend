@@ -28,7 +28,7 @@ export default class UserService implements Service {
     }
 
     if (Object.keys(updatePayload).length > 0) {
-      await this.userModel.findOneAndUpdate({ _id: user }, { ...updatePayload });
+      await this.userModel.findOneAndUpdate({ _id: new ObjectId(user.id) }, { ...updatePayload });
     }
   }
 

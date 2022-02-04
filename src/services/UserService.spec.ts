@@ -1,13 +1,47 @@
+import { User, UserDb } from "../models/User";
+import { createModelMock, TypedJestMock } from "../test/utils/testUtils";
 import UserService from "./UserService";
+
+jest.mock("../utils/ObjectId", () => ({ ObjectId: jest.fn().mockImplementation(() => "mock_id") }));
 
 describe("UserService", () => {
   let cut: UserService;
+  let userDbMock: TypedJestMock<UserDb>;
+  const MOCK_USER: User = {
+    email: "mock_email",
+    password: "mock_password",
+    usedAssets: { assetPacks: [] },
+    username: "mock_username",
+    id: "id",
+  };
 
   beforeEach(() => {
-    // cut = new UserService();
+    userDbMock = createModelMock();
+    cut = new UserService(userDbMock as any);
   });
 
   describe("updateUser", () => {
-    // beforeEach(() => {});
+    describe("with all parameters", () => {
+      beforeEach(async () => {
+        await cut.updateUser(MOCK_USER, "new_email", "new_username");
+      });
+
+      it("updates the user", () => {
+        expect(userDbMock.findOneAndUpdate).toHaveBeenCalledWith(expect.any(Object), {
+          email: "new_email",
+          username: "new_username",
+        });
+      });
+    });
+  });
+
+  describe("deleteUser", () => {
+    beforeEach(async () => {
+      await cut.deleteUser(MOCK_USER);
+    });
+
+    it("deletes the user", () => {
+      expect(userDbMock.deleteOne).toHaveBeenCalled();
+    });
   });
 });
