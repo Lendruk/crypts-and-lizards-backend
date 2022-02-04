@@ -1,25 +1,31 @@
-import { model, Schema, Types } from "mongoose";
+import { injectable } from "inversify";
+import { Document, Types } from "mongoose";
+import AbstractModel from "../types/AbstractModel";
 
-interface User {
-  _id: Types.ObjectId;
+export interface User {
   username: string;
   email: string;
   password: string;
   usedAssets: UsedAssets;
+  id?: any;
 }
+
+export interface UserModel extends User, Document {}
 
 interface UsedAssets {
   assetPacks: Types.ObjectId[];
 }
 
-const UserSchema = new Schema<User>(
-  {
-    username: { type: String },
-    email: { type: String },
-    password: { type: String },
-  },
-  { timestamps: { createdAt: "_created", updatedAt: "_modified" } }
-);
-
-const User = model<User>("User", UserSchema);
-export default User;
+@injectable()
+export class UserDb extends AbstractModel<User, UserModel> {
+  public constructor() {
+    super(
+      {
+        username: { type: String },
+        email: { type: String },
+        password: { type: String },
+      },
+      "users"
+    );
+  }
+}

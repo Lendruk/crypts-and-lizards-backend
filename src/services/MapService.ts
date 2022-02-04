@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import GameMap from "../models/GameMap";
-import User from "../models/User";
+import { User } from "../models/User";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
 
@@ -40,7 +40,7 @@ export default class MapService implements Service {
       return await GameMap.aggregate([
         {
           $match: {
-            createdBy: user._id,
+            createdBy: new ObjectId(user.id),
             assetPacks: new ObjectId(packId),
           },
         },
@@ -67,7 +67,12 @@ export default class MapService implements Service {
       if (!assetPack) throw new ServerException(Errors.MISSING_PARAMS("assetPack"));
       if (!title) throw new ServerException(Errors.MISSING_PARAMS("title"));
 
-      const map = new GameMap({ title, description, assetPacks: [new ObjectId(assetPack)], createdBy: creator._id });
+      const map = new GameMap({
+        title,
+        description,
+        assetPacks: [new ObjectId(assetPack)],
+        createdBy: new ObjectId(creator.id),
+      });
       await map.save();
 
       return map;

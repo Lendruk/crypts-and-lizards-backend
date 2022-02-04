@@ -7,6 +7,7 @@ interface Campaign {
   description: string;
   tags: Tag[];
   assetPacks: AssetPack[];
+  forkedFrom: Campaign;
 }
 
 const CampaignSchema = new Schema<Campaign>({

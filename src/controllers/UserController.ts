@@ -1,64 +1,37 @@
-import { Request, Response } from "express";
-import { injectable } from "inversify";
+import { Response } from "express";
+import { inject, injectable, named } from "inversify";
 import Controller from "../types/Controller";
 import { Delete, Put } from "../types/ControllerRoute";
-import AuthService from "../services/AuthService";
-import { Errors, Exception } from "../error-handling/ErrorCodes";
-import User from "../models/User";
-import Token from "../models/Token";
 import { RequireAuth } from "../types/RequireAuth";
+import UserService from "../services/UserService";
+import { TYPES } from "../ioc/Types";
+import { ExpressRequest } from "../types/ExpressRequest";
 
 @injectable()
 export default class UserController implements Controller {
   private static readonly API_PATH = "/users";
+
+  public constructor(@inject(TYPES.Service) @named("UserService") private userService: UserService) {}
 
   public start(): void {
     /* */
   }
 
   @Put("/self")
-  public async updateSelf(req: Request, res: Response): Promise<void> {
-    const { body } = req;
-
-    const updatePayload: { [index: string]: string } = {};
-
-    const token = body.token;
-
-    if (!token || !AuthService.verifyToken(token)) throw new Exception(Errors.AUTH.NO_TOKEN);
-
-    if (body.email) {
-      updatePayload.email = body.email;
-    }
-
-    if (body.username) {
-      updatePayload.username = body.username;
-    }
-
-    if (Object.keys(updatePayload).length > 0) {
-      const tokenObj = await Token.findOne({ token });
-      await User.findOneAndUpdate({ _id: tokenObj!.user }, { ...updatePayload });
-    }
-
+  @RequireAuth()
+  public async updateSelf(req: ExpressRequest, res: Response): Promise<void> {
+    const { body, user } = req;
+    await this.userService.updateUser(user, body.email, body.username);
     res.status(200).send();
   }
 
   @Delete("/self")
   @RequireAuth()
-  public async deleteSelf(req: Request, res: Response): Promise<void> {
-    const {
-      body: { token },
-    } = req;
-    const tokenObj = await Token.findOne({ token });
-    await User.deleteOne({ _id: tokenObj!.user });
+  public async deleteSelf(req: ExpressRequest, res: Response): Promise<void> {
+    const { user } = req;
+    await this.userService.deleteUser(user);
+    res.status(200).send();
   }
-
-  @Delete("/:id")
-  public deleteUser(req: Request, res: Response) {
-
-  }
-
-  @Put("/:id")
-  public updateUser(req: Request, res: Response) {}
 
   public getApiPath(): string {
     return UserController.API_PATH;

@@ -1,11 +1,8 @@
-
-type SpellComponent = {
-
-}
+type SpellComponent = {};
 
 interface Spell {
   name: string;
   level: number;
-  school: string; 
+  school: string;
   duration: string;
 }

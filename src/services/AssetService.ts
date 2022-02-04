@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import AssetPack from "../models/AssetPack";
 import Tag from "../models/Tag";
-import User from "../models/User";
+import { User } from "../models/User";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
 
@@ -24,7 +24,9 @@ export default class AssetService implements Service {
 
   public async getMyAssets(user: User): Promise<AssetPack[]> {
     try {
-      const assets = await AssetPack.find({ createdBy: user }).populate("tags").lean();
+      const assets = await AssetPack.find({ createdBy: new ObjectId(user.id) })
+        .populate("tags")
+        .lean();
       return assets;
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR);
@@ -65,9 +67,13 @@ export default class AssetService implements Service {
         }
       }
       updatePayload.tags = finalTagPayload;
-      assetPack = await AssetPack.findOneAndUpdate({ _id: new ObjectId(id), createdBy: user }, updatePayload, {
-        new: true,
-      }).lean();
+      assetPack = await AssetPack.findOneAndUpdate(
+        { _id: new ObjectId(id), createdBy: new ObjectId(user.id) },
+        updatePayload,
+        {
+          new: true,
+        }
+      ).lean();
     } catch (error) {
       console.log(error);
       throw new ServerException(Errors.SERVER_ERROR);
@@ -83,7 +89,7 @@ export default class AssetService implements Service {
   public async createAssetPack(options: { title: string; description?: string; creator: User }): Promise<AssetPack> {
     const { title, creator, description } = options;
     try {
-      const assetPack = new AssetPack({ title, description: description || null, createdBy: creator._id });
+      const assetPack = new AssetPack({ title, description: description || null, createdBy: new ObjectId(creator.id) });
       await assetPack.save();
 
       return assetPack;
@@ -95,7 +101,7 @@ export default class AssetService implements Service {
 
   public async deleteAssetPack(id: string, creator: User): Promise<void> {
     try {
-      await AssetPack.deleteOne({ _id: new ObjectId(id), createdBy: creator });
+      await AssetPack.deleteOne({ _id: new ObjectId(id), createdBy: new ObjectId(creator.id) });
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR);
     }

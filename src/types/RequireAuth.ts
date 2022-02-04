@@ -1,4 +1,5 @@
 import { NextFunction, Response } from "express-serve-static-core";
+import app from "../App";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import AuthService from "../services/AuthService";
 import { ExpressFunction } from "./ExpressFunction";
@@ -14,7 +15,8 @@ const checkToken = async (req: ExpressRequest, res: Response, next: NextFunction
     if (splitToken[0] !== "Bearer" || splitToken[1] == null || splitToken[1] == "null")
       throw new ServerException(Errors.AUTH.INVALID_TOKEN);
 
-    const foundUser = await AuthService.verifyToken(splitToken[1]);
+    const authService = app.container.getNamed<AuthService>(AuthService, "AuthService");
+    const foundUser = await authService.verifyToken(splitToken[1]);
 
     if (!foundUser) {
       throw new ServerException(Errors.AUTH.INVALID_TOKEN);

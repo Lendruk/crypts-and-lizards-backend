@@ -3,6 +3,7 @@ import { model, Schema } from "mongoose";
 interface Category {
   name: string;
   subCategories: Category[];
+  parent?: Category;
 }
 
 const CategorySchema = new Schema<Category>(

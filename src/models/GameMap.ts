@@ -1,8 +1,9 @@
 import { model, Schema } from "mongoose";
 import { Vector2 } from "../types/Vector2";
 import { ObjectId } from "../utils/ObjectId";
+import AssetPack from "./AssetPack";
 import Tag from "./Tag";
-import User from "./User";
+import { User } from "./User";
 
 type MapObjectType = "PROP";
 
@@ -15,6 +16,7 @@ interface GameMap {
   tags: Tag[];
   mapLayers: MapLayer[];
   createdBy: User;
+  assetPacks: AssetPack[];
 }
 
 interface MapObject {

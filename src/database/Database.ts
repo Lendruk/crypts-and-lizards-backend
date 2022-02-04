@@ -2,13 +2,12 @@ import mongoose from "mongoose";
 
 const dbOptions = {
   useNewUrlParser: true,
-  useCreateIndex: true,
+  // useCreateIndex: true,
   useUnifiedTopology: true,
-  useFindAndModify: false,
-  auth: {
-    user: process.env.DATABASE_USERNAME,
-    password: process.env.DATABASE_PASSWORD,
-  },
+  // useFindAndModify: false,
+  authMechanism: "DEFAULT",
+  user: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
 };
 
 const connect = async () => {

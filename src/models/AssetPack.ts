@@ -3,7 +3,7 @@ import Category from "./Category";
 import Currency from "./Items/Currency";
 import Item from "./Items/Item";
 import Tag from "./Tag";
-import User from "./User";
+import { User } from "./User";
 
 type AssetPackPrivacy = "PUBLIC" | "PRIVATE" | "TRUSTED";
 

@@ -1,10 +1,12 @@
-import { injectable } from "inversify";
+import { inject, injectable, named } from "inversify";
 import { Service } from "../types/Service";
 import * as bCrypt from "bcryptjs";
-import User from "../models/User";
+import { User, UserDb } from "../models/User";
 import jwt from "jsonwebtoken";
 import Token from "../models/Token";
 import { Errors, Exception, ServerException } from "../error-handling/ErrorCodes";
+import { TYPES } from "../ioc/Types";
+import { ObjectId } from "../utils/ObjectId";
 
 type LoginReturns = {
   accessToken: string;
@@ -16,6 +18,8 @@ type LoginReturns = {
 
 @injectable()
 export default class AuthService implements Service {
+  public constructor(@inject(TYPES.Model) @named("User") private userDb: UserDb) {}
+
   public async start(): Promise<void> {
     /* */
   }
@@ -24,18 +28,17 @@ export default class AuthService implements Service {
     const { username, email, password } = options;
     const hashedPassword = await this.generateHash(password);
 
-    if (await User.findOne({ $or: [{ username }, { email }] })) {
+    if (await this.userDb.findOne({ $or: [{ username }, { email }] })) {
       throw new ServerException(Errors.BAD_REQUEST);
     }
 
-    const newUser = new User({ username, email, password: hashedPassword });
-    await newUser.save();
+    await this.userDb.save({ username, email, password: hashedPassword, usedAssets: { assetPacks: [] } });
   }
 
   public async loginUser(options: { username: string; password: string }): Promise<LoginReturns> {
     const { username, password } = options;
 
-    const user = await User.findOne({ username }).lean();
+    const user = await this.userDb.findOne({ username });
 
     if (!user) throw new Exception(Errors.AUTH.INVALID_CREDS);
 
@@ -43,10 +46,10 @@ export default class AuthService implements Service {
 
     if (!correctPassword) throw new Exception(Errors.AUTH.INVALID_CREDS);
 
-    const token = jwt.sign({ _id: user._id }, user.password, { expiresIn: "5h" });
+    const token = jwt.sign({ _id: new ObjectId(user.id) }, user.password, { expiresIn: "5h" });
 
     try {
-      const newToken = new Token({ user, token, device: "WEB" });
+      const newToken = new Token({ user: new ObjectId(user.id), token, device: "WEB" });
       await newToken.save();
     } catch (error) {
       throw new ServerException(Errors.AUTH.INVALID_CREDS);
@@ -56,23 +59,17 @@ export default class AuthService implements Service {
   }
 
   public async logoutUser(token: string): Promise<void> {
-    if (await AuthService.verifyToken(token)) {
+    if (await this.verifyToken(token)) {
       await Token.deleteOne({ token });
     }
   }
 
-  private async generateHash(password: string): Promise<string> {
-    const salt = await bCrypt.genSalt(12);
-    const hash = await bCrypt.hash(password, salt);
-    return hash;
-  }
-
-  static async verifyToken(token: string): Promise<User | undefined> {
+  public async verifyToken(token: string): Promise<User | undefined> {
     const tokenObj = await Token.findOne({ token }).lean();
 
     if (!tokenObj) return undefined;
 
-    const user = await User.findOne({ _id: tokenObj.user });
+    const user = await this.userDb.findOne({ _id: tokenObj.user });
 
     if (!user) return undefined;
 
@@ -84,5 +81,11 @@ export default class AuthService implements Service {
       await Token.deleteOne({ _id: tokenObj._id });
       return undefined;
     }
+  }
+
+  private async generateHash(password: string): Promise<string> {
+    const salt = await bCrypt.genSalt(12);
+    const hash = await bCrypt.hash(password, salt);
+    return hash;
   }
 }

@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import { ObjectId } from "../utils/ObjectId";
-import User from "./User";
+import { User } from "./User";
 
 type Device = "WEB" | "MOBILE";
 
@@ -14,7 +14,7 @@ export interface Token {
 const TokenSchema = new Schema<Token>(
   {
     user: { type: Schema.Types.ObjectId, ref: "User" },
-    token: { type: String, default: null, unique: true },
+    token: { type: String, default: "", unique: true },
     device: { type: String },
   },
   { timestamps: { createdAt: "_created" } }
