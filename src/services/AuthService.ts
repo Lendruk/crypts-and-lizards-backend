@@ -1,12 +1,12 @@
 import { inject, injectable, named } from "inversify";
 import { Service } from "../types/Service";
-import * as bCrypt from "bcryptjs";
+import * as BCrypt from "bcryptjs";
 import { User, UserDb } from "../models/User";
 import jwt from "jsonwebtoken";
-import Token from "../models/Token";
 import { Errors, Exception, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
 import { ObjectId } from "../utils/ObjectId";
+import { TokenDb } from "../models/Token";
 
 type LoginReturns = {
   accessToken: string;
@@ -18,7 +18,12 @@ type LoginReturns = {
 
 @injectable()
 export default class AuthService implements Service {
-  public constructor(@inject(TYPES.Model) @named("User") private userDb: UserDb) {}
+  public constructor(
+    @inject(TYPES.Model) @named("User") private userDb: UserDb,
+    @inject(TYPES.Model) @named("Token") private tokenDb: TokenDb,
+    @inject(TYPES.BCrypt) private bCrypt: typeof BCrypt,
+    @inject(TYPES.JWT) private JWT: typeof jwt
+  ) {}
 
   public async start(): Promise<void> {
     /* */
@@ -26,12 +31,11 @@ export default class AuthService implements Service {
 
   public async registerUser(options: { username: string; email: string; password: string }): Promise<void> {
     const { username, email, password } = options;
-    const hashedPassword = await this.generateHash(password);
-
     if (await this.userDb.findOne({ $or: [{ username }, { email }] })) {
       throw new ServerException(Errors.BAD_REQUEST);
     }
 
+    const hashedPassword = await this.generateHash(password);
     await this.userDb.save({ username, email, password: hashedPassword, usedAssets: { assetPacks: [] } });
   }
 
@@ -42,16 +46,16 @@ export default class AuthService implements Service {
 
     if (!user) throw new Exception(Errors.AUTH.INVALID_CREDS);
 
-    const correctPassword = await bCrypt.compare(password, user.password);
+    const correctPassword = await this.bCrypt.compare(password, user.password);
 
     if (!correctPassword) throw new Exception(Errors.AUTH.INVALID_CREDS);
 
-    const token = jwt.sign({ _id: new ObjectId(user.id) }, user.password, { expiresIn: "5h" });
+    const token = this.JWT.sign({ _id: user.id }, user.password, { expiresIn: "5h" });
 
     try {
-      const newToken = new Token({ user: new ObjectId(user.id), token, device: "WEB" });
-      await newToken.save();
+      await this.tokenDb.save({ token, device: "WEB" }, { user: new ObjectId(user.id) });
     } catch (error) {
+      console.log(error);
       throw new ServerException(Errors.AUTH.INVALID_CREDS);
     }
 
@@ -60,12 +64,12 @@ export default class AuthService implements Service {
 
   public async logoutUser(token: string): Promise<void> {
     if (await this.verifyToken(token)) {
-      await Token.deleteOne({ token });
+      await this.tokenDb.deleteByField({ token });
     }
   }
 
   public async verifyToken(token: string): Promise<User | undefined> {
-    const tokenObj = await Token.findOne({ token }).lean();
+    const tokenObj = await this.tokenDb.findOne({ token });
 
     if (!tokenObj) return undefined;
 
@@ -74,18 +78,18 @@ export default class AuthService implements Service {
     if (!user) return undefined;
 
     try {
-      jwt.verify(token, user.password);
+      this.JWT.verify(token, user.password);
       return user;
     } catch (error) {
       console.log(error);
-      await Token.deleteOne({ _id: tokenObj._id });
+      await this.tokenDb.deleteByField({ token: tokenObj.token });
       return undefined;
     }
   }
 
   private async generateHash(password: string): Promise<string> {
-    const salt = await bCrypt.genSalt(12);
-    const hash = await bCrypt.hash(password, salt);
+    const salt = await this.bCrypt.genSalt(12);
+    const hash = await this.bCrypt.hash(password, salt);
     return hash;
   }
 }

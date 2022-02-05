@@ -33,6 +33,6 @@ export default class UserService implements Service {
   }
 
   public async deleteUser(user: User): Promise<void> {
-    await this.userModel.deleteOne(new ObjectId(user.id));
+    await this.userModel.deleteById(new ObjectId(user.id));
   }
 }

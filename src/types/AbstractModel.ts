@@ -8,6 +8,9 @@ import {
   FilterQuery,
   UpdateQuery,
   QueryOptions,
+  SchemaOptions,
+  IndexOptions,
+  IndexDefinition,
 } from "mongoose";
 import { ObjectId } from "../utils/ObjectId";
 
@@ -16,13 +19,27 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
   protected Model: MongooseModel<DbModel>;
   private name: string;
 
-  public constructor(schemaDef: SchemaDefinition, modelName: string) {
+  public constructor(
+    schemaDef: SchemaDefinition,
+    modelName: string,
+    schemaOptions?: SchemaOptions,
+    indexOptions?: { fields: IndexDefinition; options?: IndexOptions }
+  ) {
     this.name = modelName;
-
-    const schema = new Schema(schemaDef, {
+    let options: SchemaOptions = {
       collection: this.name,
       timestamps: { createdAt: "_created", updatedAt: "_modified" },
-    });
+    };
+
+    if (schemaOptions) {
+      options = { ...options, ...schemaOptions };
+    }
+
+    const schema = new Schema(schemaDef, options);
+
+    if (indexOptions) {
+      schema.index(indexOptions.fields, indexOptions.options);
+    }
     this.Model = model<DbModel>(this.name, schema);
   }
 
@@ -30,8 +47,12 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
     return await this.Model.find({});
   }
 
-  public async deleteOne(id: ObjectId): Promise<void> {
+  public async deleteById(id: ObjectId): Promise<void> {
     await this.Model.deleteOne({ _id: id });
+  }
+
+  public async deleteByField(filter?: FilterQuery<ModelData>): Promise<void> {
+    await this.Model.deleteOne(filter);
   }
 
   public async findOne(
@@ -43,8 +64,16 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
     return res ? this.mapToData(res) : null;
   }
 
-  public async save(data: ModelData): Promise<ModelData> {
-    const newDocument = new this.Model(data);
+  public async save(
+    data: Partial<ModelData>,
+    refs?: { [P in keyof Partial<ModelData>]: string | ObjectId }
+  ): Promise<ModelData> {
+    let objPayload = data;
+    if (refs) {
+      objPayload = { ...objPayload, ...refs };
+    }
+
+    const newDocument = new this.Model(objPayload);
     const savedResult = await newDocument.save();
     return this.mapToData(savedResult);
   }
@@ -62,7 +91,6 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
     cleanObj.id = cleanObj._id;
     delete cleanObj._id;
     delete cleanObj.__v;
-    console.log(cleanObj);
     return cleanObj as ModelData;
   }
 }

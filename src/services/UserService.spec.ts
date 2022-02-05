@@ -41,7 +41,7 @@ describe("UserService", () => {
     });
 
     it("deletes the user", () => {
-      expect(userDbMock.deleteOne).toHaveBeenCalled();
+      expect(userDbMock.deleteById).toHaveBeenCalled();
     });
   });
 });

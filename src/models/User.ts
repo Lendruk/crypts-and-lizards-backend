@@ -25,7 +25,8 @@ export class UserDb extends AbstractModel<User, UserModel> {
         email: { type: String },
         password: { type: String },
       },
-      "users"
+      "users",
+      { timestamps: { createdAt: "_created" } }
     );
   }
 }

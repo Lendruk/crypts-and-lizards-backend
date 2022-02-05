@@ -15,17 +15,27 @@ export const createJestMock = (funcs: string[], props?: { [index: string]: any }
       mock[key] = props[key];
     }
   }
-
   return mock;
+};
+
+export const createTypedMock = <T>(props: string[]): TypedJestMock<T> => {
+  const mock: Partial<TypedJestMock<T>> = {};
+
+  for (const prop of props) {
+    mock[prop] = jest.fn();
+  }
+
+  return mock as TypedJestMock<T>;
 };
 
 export const createModelMock = (): TypedJestMock<AbstractModel<any, any>> => {
   const modelMock: TypedJestMock<AbstractModel<any, any>> = {
     all: jest.fn(),
-    deleteOne: jest.fn(),
+    deleteById: jest.fn(),
     findOne: jest.fn(),
     findOneAndUpdate: jest.fn(),
     save: jest.fn(),
+    deleteByField: jest.fn(),
   };
 
   return modelMock;
