@@ -36,6 +36,8 @@ export const createModelMock = (): TypedJestMock<AbstractModel<any, any>> => {
     findOneAndUpdate: jest.fn(),
     save: jest.fn(),
     deleteByField: jest.fn(),
+    queryByField: jest.fn(),
+    queryOne: jest.fn(),
   };
 
   return modelMock;

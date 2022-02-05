@@ -11,6 +11,8 @@ import {
   SchemaOptions,
   IndexOptions,
   IndexDefinition,
+  HydratedDocument,
+  Query,
 } from "mongoose";
 import { ObjectId } from "../utils/ObjectId";
 
@@ -64,6 +66,29 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
     return res ? this.mapToData(res) : null;
   }
 
+  public queryByField(
+    filter: FilterQuery<ModelData>
+  ): Query<
+    HydratedDocument<DbModel, Record<string, unknown>, Record<string, unknown>>[],
+    HydratedDocument<DbModel, Record<string, unknown>, Record<string, unknown>>,
+    Record<string, unknown>,
+    DbModel
+  > {
+    const res = this.Model.find(filter);
+    return res;
+  }
+
+  public queryOne(
+    filter: FilterQuery<ModelData>
+  ): Query<
+    HydratedDocument<DbModel, Record<string, unknown>, Record<string, unknown>> | null,
+    HydratedDocument<DbModel, Record<string, unknown>, Record<string, unknown>>,
+    Record<string, unknown>,
+    DbModel
+  > {
+    return this.Model.findOne(filter);
+  }
+
   public async save(
     data: Partial<ModelData>,
     refs?: { [P in keyof Partial<ModelData>]: string | ObjectId }
@@ -83,7 +108,7 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
     update?: UpdateQuery<ModelData> | undefined,
     options?: QueryOptions | null | undefined
   ): Promise<ModelData> {
-    return this.mapToData(await this.Model.findOneAndUpdate(filter, update, options).lean());
+    return this.mapToData((await this.Model.findOneAndUpdate(filter, update, options)) as DbModel);
   }
 
   private mapToData(model: DbModel): ModelData {
