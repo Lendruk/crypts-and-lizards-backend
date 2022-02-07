@@ -16,7 +16,7 @@ export default class MapService implements Service {
       const maps = await GameMap.find({ createdBy: user }).lean();
       return maps;
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -25,7 +25,7 @@ export default class MapService implements Service {
     try {
       map = await GameMap.findOne({ createdBy: user, _id: new ObjectId(id) });
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
 
     if (!map) {
@@ -52,7 +52,7 @@ export default class MapService implements Service {
         },
       ]);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -77,7 +77,7 @@ export default class MapService implements Service {
 
       return map;
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -85,7 +85,7 @@ export default class MapService implements Service {
     try {
       await GameMap.deleteOne({ _id: new ObjectId(mapId), creator: user });
     } catch (error) {
-      throw new ServerException(Errors.RESOURCE_NOT_FOUND);
+      throw new ServerException(Errors.RESOURCE_NOT_FOUND, error as Error);
     }
   }
 }

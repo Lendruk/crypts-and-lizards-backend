@@ -34,7 +34,7 @@ export default class AssetService implements Service {
       const assets = await this.assetPackDb.queryByField({ createdBy: user.id }).populate("tags").lean();
       return assets;
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -46,8 +46,7 @@ export default class AssetService implements Service {
         .populate("tags")
         .lean();
     } catch (error) {
-      console.log(error);
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
 
     if (!assetPack) {
@@ -82,8 +81,7 @@ export default class AssetService implements Service {
         }
       );
     } catch (error) {
-      console.log(error);
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
 
     if (!assetPack) {
@@ -108,7 +106,7 @@ export default class AssetService implements Service {
       return assetPack;
     } catch (error) {
       console.log(error);
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -116,7 +114,7 @@ export default class AssetService implements Service {
     try {
       await this.assetPackDb.deleteByField({ _id: new ObjectId(id), createdBy: new ObjectId(creator.id) });
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 }

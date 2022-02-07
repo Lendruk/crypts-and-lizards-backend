@@ -15,7 +15,7 @@ export default class ItemService implements Service {
     try {
       return Currency.find({}).lean();
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -29,7 +29,7 @@ export default class ItemService implements Service {
 
       return currency;
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -38,7 +38,7 @@ export default class ItemService implements Service {
     try {
       item = await Item.findOne({ _id: new ObjectId(id) });
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
 
     if (!item) {

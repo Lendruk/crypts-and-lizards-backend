@@ -26,7 +26,7 @@ export default class MapController implements Controller {
       const maps = await this.mapService.getMyMaps(user);
       res.status(200).json(maps);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -39,7 +39,7 @@ export default class MapController implements Controller {
       const map = await this.mapService.createMap({ creator: user, ...body });
       res.status(201).json(map);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -56,7 +56,7 @@ export default class MapController implements Controller {
 
       res.status(200).send();
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 

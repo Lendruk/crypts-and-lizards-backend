@@ -51,7 +51,7 @@ export default class AuthController implements Controller {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await this.authService.logoutUser(req.accessToken!);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
 
     res.status(200).send();

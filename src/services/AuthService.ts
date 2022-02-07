@@ -56,7 +56,7 @@ export default class AuthService implements Service {
       await this.tokenDb.save({ token, device: "WEB" }, { user: new ObjectId(user.id) });
     } catch (error) {
       console.log(error);
-      throw new ServerException(Errors.AUTH.INVALID_CREDS);
+      throw new ServerException(Errors.AUTH.INVALID_CREDS, error as Error);
     }
 
     return { accessToken: token, user: { username: user.username, email: user.email || undefined } };

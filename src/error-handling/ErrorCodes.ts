@@ -12,9 +12,9 @@ export class Exception extends Error {
 }
 
 export class ServerException extends Exception {
-  constructor(params: { httpCode: number; message: string }) {
+  constructor(params: { httpCode: number; message: string }, payload?: Error | string) {
     super(params);
-    Logger.error(this.message);
+    Logger.error(`${this.message} - ${payload}`);
   }
 }
 

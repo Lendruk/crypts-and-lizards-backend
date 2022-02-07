@@ -31,7 +31,7 @@ export default class AssetController implements Controller {
       const assets = await this.assetService.getMyAssets(user);
       res.status(200).json(assets);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -46,7 +46,7 @@ export default class AssetController implements Controller {
       const maps = await this.mapService.getMapsForPack(user, id);
       res.status(200).json(maps);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -73,7 +73,7 @@ export default class AssetController implements Controller {
 
       res.status(200).json(assetPack);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -90,7 +90,7 @@ export default class AssetController implements Controller {
 
       res.status(200).json(assetPack);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
@@ -106,7 +106,7 @@ export default class AssetController implements Controller {
       const asset = await this.assetService.deleteAssetPack(id, user);
       res.status(200).json(asset);
     } catch (error) {
-      throw new ServerException(Errors.SERVER_ERROR);
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
 
