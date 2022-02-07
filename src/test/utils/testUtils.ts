@@ -29,6 +29,7 @@ export const createTypedMock = <T>(props: string[]): TypedJestMock<T> => {
 };
 
 export const createModelMock = (): TypedJestMock<AbstractModel<any, any>> => {
+  const queryMock = { populate: jest.fn().mockImplementation(() => ({ lean: jest.fn() })) };
   const modelMock: TypedJestMock<AbstractModel<any, any>> = {
     all: jest.fn(),
     deleteById: jest.fn(),
@@ -36,9 +37,18 @@ export const createModelMock = (): TypedJestMock<AbstractModel<any, any>> => {
     findOneAndUpdate: jest.fn(),
     save: jest.fn(),
     deleteByField: jest.fn(),
-    queryByField: jest.fn(),
-    queryOne: jest.fn(),
+    queryByField: jest.fn().mockImplementation(() => queryMock),
+    queryOne: jest.fn().mockImplementation(() => queryMock),
   };
 
   return modelMock;
+};
+
+export const createQueryMockReturn = (obj: JestMock) => {
+  const queryResult = {
+    populate: jest.fn().mockImplementation(() => ({ ...obj, lean: jest.fn().mockImplementation(() => obj) })),
+    lean: jest.fn().mockImplementation(() => obj),
+  };
+
+  return queryResult;
 };

@@ -4,4 +4,5 @@ export const TYPES = {
   Model: Symbol("Model"),
   BCrypt: Symbol("BCrypt"),
   JWT: Symbol("JWT"),
+  ObjectId: Symbol("ObjectId"),
 };

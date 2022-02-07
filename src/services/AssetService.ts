@@ -1,8 +1,10 @@
-import { injectable } from "inversify";
+import { inject, injectable, named } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
-import AssetPack from "../models/AssetPack";
+import { TYPES } from "../ioc/Types";
+import { AssetPack, AssetPackDb } from "../models/AssetPack";
 import Tag from "../models/Tag";
 import { User } from "../models/User";
+import { Factory } from "../types/Factory";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
 
@@ -14,19 +16,22 @@ type PartialAssetPack = {
 
 @injectable()
 export default class AssetService implements Service {
+  public constructor(
+    @inject(TYPES.Model) @named("AssetPackDb") private assetPackDb: AssetPackDb,
+    @inject(TYPES.ObjectId) private objectIdFactory: Factory<string, ObjectId>
+  ) {}
+
   public async start(): Promise<void> {
     /* */
   }
 
   public async getAssetPacks(): Promise<AssetPack[]> {
-    return await AssetPack.find({});
+    return await this.assetPackDb.all();
   }
 
   public async getMyAssets(user: User): Promise<AssetPack[]> {
     try {
-      const assets = await AssetPack.find({ createdBy: new ObjectId(user.id) })
-        .populate("tags")
-        .lean();
+      const assets = await this.assetPackDb.queryByField({ createdBy: user.id }).populate("tags").lean();
       return assets;
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR);
@@ -36,10 +41,12 @@ export default class AssetService implements Service {
   public async getAssetPack(id: string): Promise<AssetPack> {
     let assetPack: AssetPack | null;
     try {
-      assetPack = await AssetPack.findOne({ _id: new ObjectId(id) })
+      assetPack = await this.assetPackDb
+        .queryOne({ _id: this.objectIdFactory(id) })
         .populate("tags")
         .lean();
     } catch (error) {
+      console.log(error);
       throw new ServerException(Errors.SERVER_ERROR);
     }
 
@@ -67,13 +74,13 @@ export default class AssetService implements Service {
         }
       }
       updatePayload.tags = finalTagPayload;
-      assetPack = await AssetPack.findOneAndUpdate(
-        { _id: new ObjectId(id), createdBy: new ObjectId(user.id) },
+      assetPack = await this.assetPackDb.findOneAndUpdate(
+        { _id: this.objectIdFactory(id), createdBy: user.id },
         updatePayload,
         {
           new: true,
         }
-      ).lean();
+      );
     } catch (error) {
       console.log(error);
       throw new ServerException(Errors.SERVER_ERROR);
@@ -89,9 +96,15 @@ export default class AssetService implements Service {
   public async createAssetPack(options: { title: string; description?: string; creator: User }): Promise<AssetPack> {
     const { title, creator, description } = options;
     try {
-      const assetPack = new AssetPack({ title, description: description || null, createdBy: new ObjectId(creator.id) });
-      await assetPack.save();
-
+      const assetPack = await this.assetPackDb.save(
+        {
+          title,
+          description: description || undefined,
+        },
+        {
+          createdBy: creator.id,
+        }
+      );
       return assetPack;
     } catch (error) {
       console.log(error);
@@ -101,7 +114,7 @@ export default class AssetService implements Service {
 
   public async deleteAssetPack(id: string, creator: User): Promise<void> {
     try {
-      await AssetPack.deleteOne({ _id: new ObjectId(id), createdBy: new ObjectId(creator.id) });
+      await this.assetPackDb.deleteByField({ _id: new ObjectId(id), createdBy: new ObjectId(creator.id) });
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR);
     }

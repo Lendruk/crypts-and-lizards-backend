@@ -70,7 +70,6 @@ export default class AuthService implements Service {
 
   public async verifyToken(token: string): Promise<User | undefined> {
     const tokenObj = await this.tokenDb.findOne({ token });
-
     if (!tokenObj) return undefined;
 
     const user = await this.userDb.findOne({ _id: tokenObj.user });

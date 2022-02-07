@@ -15,7 +15,7 @@ import { errorCatcher, errorHandler } from "./error-handling/ErrorHandler";
 import { Errors, Exception } from "./error-handling/ErrorCodes";
 import { ExpressFunction } from "./types/ExpressFunction";
 import ModelModule from "./ioc/containers/ModelModule";
-import ConstantsModule from "./ioc/containers/ConstantsModule";
+import LibraryModule from "./ioc/containers/LibraryModule";
 
 const PORT = 8080;
 
@@ -46,7 +46,7 @@ class App {
     this.container.load(ServiceModule.getContainerModule());
     this.container.load(ControllerModule.getContainerModule());
     this.container.load(ModelModule.getContainerModule());
-    this.container.load(ConstantsModule.getContainerModule());
+    this.container.load(LibraryModule.getContainerModule());
   }
 
   private startServices(): void {

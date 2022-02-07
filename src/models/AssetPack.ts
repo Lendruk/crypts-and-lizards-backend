@@ -1,4 +1,6 @@
-import { model, Schema } from "mongoose";
+import { injectable } from "inversify";
+import { Document, model, Schema } from "mongoose";
+import AbstractModel from "../types/AbstractModel";
 import Category from "./Category";
 import Currency from "./Items/Currency";
 import Item from "./Items/Item";
@@ -13,7 +15,7 @@ interface Asset {
   categories: Category[];
 }
 
-interface AssetPack {
+export interface AssetPack {
   title: string;
   description: string;
   assets: Asset;
@@ -28,17 +30,20 @@ const AssetSchema = new Schema<Asset>({
   categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
 });
 
-const AssetPackSchema = new Schema<AssetPack>(
-  {
-    title: { type: String },
-    tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
-    description: { type: String, default: "" },
-    assets: { type: AssetSchema, default: null },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User" },
-    privacy: { type: String, enum: ["PRIVATE", "PUBLIC", "TRUSTED"], default: "PRIVATE" },
-  },
-  { timestamps: { createdAt: "_created", updatedAt: "_modified" } }
-);
-
-const AssetPack = model<AssetPack>("AssetPack", AssetPackSchema);
-export default AssetPack;
+interface AssetPackModel extends AssetPack, Document {}
+@injectable()
+export class AssetPackDb extends AbstractModel<AssetPack, AssetPackModel> {
+  public constructor() {
+    super(
+      {
+        title: { type: String },
+        tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
+        description: { type: String, default: "" },
+        assets: { type: AssetSchema },
+        createdBy: { type: Schema.Types.ObjectId, ref: "User" },
+        privacy: { type: String, enum: ["PRIVATE", "PUBLIC", "TRUSTED"], default: "PRIVATE" },
+      },
+      "assetPacks"
+    );
+  }
+}
