@@ -1,15 +1,18 @@
-import { model, Schema } from "mongoose";
+import { Document } from "mongoose";
+import AbstractModel from "../types/AbstractModel";
 
-interface Permission {
+export interface Permission {
   name: string;
 }
 
-const PermissionSchema = new Schema<Permission>(
-  {
-    name: { type: String },
-  },
-  { timestamps: { createdAt: "_created" } }
-);
-
-const Permission = model<Permission>("Permission", PermissionSchema);
-export default Permission;
+interface PermissionModel extends Permission, Document {}
+export class PermissionDb extends AbstractModel<Permission, PermissionModel> {
+  public constructor() {
+    super(
+      {
+        name: { type: String },
+      },
+      "permissions"
+    );
+  }
+}

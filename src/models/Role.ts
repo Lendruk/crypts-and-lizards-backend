@@ -1,15 +1,23 @@
-import { model, Schema } from "mongoose";
-import Permission from "./Permission";
+import { injectable } from "inversify";
+import { Document, Schema } from "mongoose";
+import AbstractModel from "../types/AbstractModel";
+import { Permission } from "./Permission";
 
-interface Role {
+export interface Role {
   name: string;
   permissions: Permission[];
 }
 
-const RoleSchema = new Schema<Role>({
-  name: { type: String },
-  permissions: [{ type: Schema.Types.ObjectId, ref: "Permission" }],
-});
-
-const Role = model<Role>("Role", RoleSchema);
-export default Role;
+interface RoleModel extends Role, Document {}
+@injectable()
+export class RoleDb extends AbstractModel<Role, RoleModel> {
+  public constructor() {
+    super(
+      {
+        name: { type: String },
+        permissions: [{ type: Schema.Types.ObjectId, ref: "Permission" }],
+      },
+      "roles"
+    );
+  }
+}
