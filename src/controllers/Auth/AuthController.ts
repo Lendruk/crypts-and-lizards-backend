@@ -6,7 +6,7 @@ import AuthService from "../../services/AuthService";
 import Controller from "../../types/Controller";
 import { Post } from "../../types/ControllerRoute";
 import { ExpressRequest } from "../../types/ExpressRequest";
-import { RequireAuth } from "../../types/RequireAuth";
+import { RequireAuth } from "../../decorators/RequireAuth";
 
 @injectable()
 export default class AuthController implements Controller {

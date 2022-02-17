@@ -1,5 +1,5 @@
 import { ContainerModule, interfaces } from "inversify";
-import { AssetPackDb } from "../../models/AssetPack";
+import { AssetPackDb } from "../../models/Assets/AssetPack";
 import { TokenDb } from "../../models/Token";
 import { UserDb } from "../../models/User";
 import { TYPES } from "../Types";

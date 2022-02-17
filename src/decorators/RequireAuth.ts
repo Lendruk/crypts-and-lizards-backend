@@ -2,8 +2,8 @@ import { NextFunction, Response } from "express-serve-static-core";
 import app from "../App";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import AuthService from "../services/AuthService";
-import { ExpressFunction } from "./ExpressFunction";
-import { ExpressRequest } from "./ExpressRequest";
+import { ExpressFunction } from "../types/ExpressFunction";
+import { ExpressRequest } from "../types/ExpressRequest";
 
 const checkToken = async (req: ExpressRequest, res: Response, next: NextFunction): Promise<void> => {
   try {

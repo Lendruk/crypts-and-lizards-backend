@@ -7,7 +7,7 @@ import MapService from "../services/MapService";
 import Controller from "../types/Controller";
 import { Delete, Get, Post, Put } from "../types/ControllerRoute";
 import { ExpressRequest } from "../types/ExpressRequest";
-import { RequireAuth } from "../types/RequireAuth";
+import { RequireAuth } from "../decorators/RequireAuth";
 
 @injectable()
 export default class AssetController implements Controller {

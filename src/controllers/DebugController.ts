@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { injectable } from "inversify";
 import Controller from "../types/Controller";
 import { Get, Post } from "../types/ControllerRoute";
-import { RequireAuth } from "../types/RequireAuth";
+import { RequireAuth } from "../decorators/RequireAuth";
 import { convertItems, createBaseCurrencies } from "../utils/convertItems";
 
 @injectable()

@@ -2,7 +2,7 @@ import { Response } from "express";
 import { inject, injectable, named } from "inversify";
 import Controller from "../types/Controller";
 import { Delete, Put } from "../types/ControllerRoute";
-import { RequireAuth } from "../types/RequireAuth";
+import { RequireAuth } from "../decorators/RequireAuth";
 import UserService from "../services/UserService";
 import { TYPES } from "../ioc/Types";
 import { ExpressRequest } from "../types/ExpressRequest";
