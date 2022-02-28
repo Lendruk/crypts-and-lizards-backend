@@ -4,14 +4,14 @@ import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
 import MapService from "../services/MapService";
 import Controller from "../types/Controller";
-import { Delete, Get, Post } from "../types/ControllerRoute";
+import { Delete, Get, Post } from "../decorators/ControllerRoute";
 import { ExpressRequest } from "../types/ExpressRequest";
-import { RequireAuth } from "../decorators/RequireAuth";
+import { RequireLogin } from "../decorators/RequireAuth";
+import { Route } from "../decorators/Route";
 
 @injectable()
+@Route("/maps")
 export default class MapController implements Controller {
-  private static readonly API_PATH = "/maps";
-
   constructor(@inject(TYPES.Service) @named("MapService") private mapService: MapService) {}
 
   public start(): void {
@@ -19,7 +19,7 @@ export default class MapController implements Controller {
   }
 
   @Get("/me")
-  @RequireAuth()
+  @RequireLogin()
   public async getMyMaps(req: ExpressRequest, res: Response): Promise<void> {
     const { user } = req;
     try {
@@ -31,7 +31,7 @@ export default class MapController implements Controller {
   }
 
   @Post("/")
-  @RequireAuth()
+  @RequireLogin()
   public async createMap(req: ExpressRequest, res: Response): Promise<void> {
     try {
       const { user, body } = req;
@@ -44,7 +44,7 @@ export default class MapController implements Controller {
   }
 
   @Delete("/:id")
-  @RequireAuth()
+  @RequireLogin()
   public async deleteMap(req: ExpressRequest, res: Response): Promise<void> {
     try {
       const {
@@ -58,9 +58,5 @@ export default class MapController implements Controller {
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
-  }
-
-  public getApiPath(): string {
-    return MapController.API_PATH;
   }
 }

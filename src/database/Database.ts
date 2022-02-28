@@ -10,8 +10,7 @@ const dbOptions = {
   password: process.env.DATABASE_PASSWORD,
 };
 
-const connect = async () => {
+export const connectDb = async () => {
   await mongoose.connect(process.env.DATABASE_CONNECTION_STRING, dbOptions);
+  console.log("Connected to database");
 };
-
-connect().then(() => console.log("Connected Successfully to Database"));

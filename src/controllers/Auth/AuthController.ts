@@ -4,14 +4,14 @@ import { Errors, Exception, ServerException } from "../../error-handling/ErrorCo
 import { TYPES } from "../../ioc/Types";
 import AuthService from "../../services/AuthService";
 import Controller from "../../types/Controller";
-import { Post } from "../../types/ControllerRoute";
+import { Post } from "../../decorators/ControllerRoute";
 import { ExpressRequest } from "../../types/ExpressRequest";
-import { RequireAuth } from "../../decorators/RequireAuth";
+import { RequireLogin } from "../../decorators/RequireAuth";
+import { Route } from "../../decorators/Route";
 
 @injectable()
+@Route("/auth")
 export default class AuthController implements Controller {
-  private static readonly API_PATH = "/auth";
-
   public constructor(@inject(TYPES.Service) @named("AuthService") private authService: AuthService) {}
 
   public start(): void {
@@ -45,7 +45,7 @@ export default class AuthController implements Controller {
   }
 
   @Post("/logout")
-  @RequireAuth()
+  @RequireLogin()
   public async logout(req: ExpressRequest, res: Response): Promise<void> {
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -58,12 +58,8 @@ export default class AuthController implements Controller {
   }
 
   @Post("/verifyToken")
-  @RequireAuth()
+  @RequireLogin()
   public async verifySession(req: Request, res: Response): Promise<void> {
     res.json({ validSession: true }).send();
-  }
-
-  public getApiPath(): string {
-    return AuthController.API_PATH;
   }
 }

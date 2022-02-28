@@ -1,5 +1,6 @@
 import { inject, injectable, named } from "inversify";
 import { TYPES } from "../ioc/Types";
+import { Role } from "../models/Role";
 import { User, UserDb } from "../models/User";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
@@ -30,6 +31,13 @@ export default class UserService implements Service {
     if (Object.keys(updatePayload).length > 0) {
       await this.userModel.findOneAndUpdate({ _id: new ObjectId(user.id) }, { ...updatePayload });
     }
+  }
+
+  public async addRole(user: User, role: Role, entity: ObjectId, modelName: string): Promise<void> {
+    await this.userModel.findOneAndUpdate(
+      { _id: user.id },
+      { $push: { roles: [{ role: role.id, entity, modelName }] } }
+    );
   }
 
   public async deleteUser(user: User): Promise<void> {

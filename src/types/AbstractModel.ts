@@ -49,6 +49,10 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
     return await this.Model.find({});
   }
 
+  public async deleteAll(): Promise<void> {
+    await this.Model.deleteMany();
+  }
+
   public async deleteById(id: ObjectId): Promise<void> {
     await this.Model.deleteOne({ _id: id });
   }

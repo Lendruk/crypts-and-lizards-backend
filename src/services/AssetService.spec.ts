@@ -1,4 +1,4 @@
-import { AssetPackDb } from "../models/AssetPack";
+import { AssetPackDb } from "../models/Assets/AssetPack";
 import { User } from "../models/User";
 import { createModelMock, createQueryMockReturn, TypedJestMock } from "../test/utils/testUtils";
 import { ObjectId } from "../utils/ObjectId";

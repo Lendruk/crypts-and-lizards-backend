@@ -5,11 +5,11 @@ import { config } from "dotenv";
 import * as core from "express-serve-static-core";
 import Controller from "./types/Controller";
 config();
-import "./database/Database";
+import { connectDb } from "./database/Database";
 import { Container } from "inversify";
 import { TYPES } from "./ioc/Types";
 import ControllerModule from "./ioc/containers/ControllerModule";
-import { RouteType } from "./types/ControllerRoute";
+import { RouteType } from "./decorators/ControllerRoute";
 import ServiceModule from "./ioc/containers/ServiceModule";
 import { errorCatcher, errorHandler } from "./error-handling/ErrorHandler";
 import { Errors, Exception } from "./error-handling/ErrorCodes";
@@ -35,7 +35,8 @@ class App {
     this.container = new Container({ autoBindInjectable: true, skipBaseClassChecks: true });
   }
 
-  public listen(): void {
+  public async listen(): Promise<void> {
+    await connectDb();
     this.loadSubContainers();
     this.buildRoutes();
     this.startServices();
@@ -58,6 +59,7 @@ class App {
     for (const controller of controllers) {
       if (Reflect.hasMetadata("routes", controller.constructor)) {
         const routes = Reflect.getMetadata("routes", controller.constructor) as RouteType[];
+        const apiPath = Reflect.getMetadata("baseRoute", controller.constructor) as string;
 
         for (const route of routes) {
           const middyMap = Reflect.getMetadata("middleware", controller.constructor) as Map<
@@ -69,7 +71,7 @@ class App {
             middyFunctions = middyMap.get(route.methodName)!;
           }
 
-          this.buildRoute(route, controller, middyFunctions);
+          this.buildRoute(apiPath, route, controller, middyFunctions);
         }
       }
     }
@@ -83,9 +85,14 @@ class App {
     this.expressApp.use("/api", this.router);
   }
 
-  private buildRoute(routeOptions: RouteType, controller: Controller, middleware: ExpressFunction[] = []): void {
+  private buildRoute(
+    apiPath: string,
+    routeOptions: RouteType,
+    controller: Controller,
+    middleware: ExpressFunction[] = []
+  ): void {
     this.router[routeOptions.httpMethod.toLowerCase()](
-      `${controller.getApiPath()}${routeOptions.path}`,
+      `${apiPath}${routeOptions.path}`,
       ...middleware.map((middy) => errorCatcher(middy)),
       errorCatcher(controller[routeOptions.methodName].bind(controller))
     );

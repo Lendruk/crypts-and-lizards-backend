@@ -32,6 +32,10 @@ export const Errors = {
       httpCode: 401,
       message: "Invalid token",
     },
+    NO_PERMISSION: {
+      httpCode: 403,
+      message: "No permission to execute this action",
+    },
   },
   NOT_FOUND: {
     httpCode: 404,

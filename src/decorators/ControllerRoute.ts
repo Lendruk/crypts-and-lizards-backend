@@ -18,6 +18,7 @@ export interface RouteType {
 
   methodName: string | symbol;
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   middleware?: Function[];
 
   propertyKey?: string | symbol;

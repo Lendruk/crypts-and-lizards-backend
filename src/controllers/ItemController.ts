@@ -4,12 +4,12 @@ import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
 import ItemService from "../services/ItemService";
 import Controller from "../types/Controller";
-import { Get } from "../types/ControllerRoute";
+import { Get } from "../decorators/ControllerRoute";
+import { Route } from "../decorators/Route";
 
 @injectable()
+@Route("/items")
 export default class ItemController implements Controller {
-  private static readonly API_PATH = "/items";
-
   public constructor(@inject(TYPES.Service) @named("ItemService") private itemService: ItemService) {}
 
   public start(): void {
@@ -34,9 +34,5 @@ export default class ItemController implements Controller {
 
     const currency = await this.itemService.getCurrency(id);
     res.status(200).json(currency);
-  }
-
-  public getApiPath(): string {
-    return ItemController.API_PATH;
   }
 }

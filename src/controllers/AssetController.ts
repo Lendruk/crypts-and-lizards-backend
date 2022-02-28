@@ -5,14 +5,14 @@ import { TYPES } from "../ioc/Types";
 import AssetService from "../services/AssetService";
 import MapService from "../services/MapService";
 import Controller from "../types/Controller";
-import { Delete, Get, Post, Put } from "../types/ControllerRoute";
+import { Delete, Get, Post, Put } from "../decorators/ControllerRoute";
 import { ExpressRequest } from "../types/ExpressRequest";
-import { RequireAuth } from "../decorators/RequireAuth";
+import { RequireLogin } from "../decorators/RequireAuth";
+import { Route } from "../decorators/Route";
 
 @injectable()
+@Route("/assets")
 export default class AssetController implements Controller {
-  private static readonly API_PATH = "/assets";
-
   constructor(
     @inject(TYPES.Service) @named("AssetService") private assetService: AssetService,
     @inject(TYPES.Service) @named("MapService") private mapService: MapService
@@ -23,7 +23,7 @@ export default class AssetController implements Controller {
   }
 
   @Get("/me")
-  @RequireAuth()
+  @RequireLogin()
   public async getAssetPacks(req: ExpressRequest, res: Response): Promise<void> {
     const { user } = req;
     try {
@@ -36,7 +36,7 @@ export default class AssetController implements Controller {
   }
 
   @Get("/:id/maps")
-  @RequireAuth()
+  @RequireLogin()
   public async getAssetPackMaps(req: ExpressRequest, res: Response): Promise<void> {
     const {
       user,
@@ -51,7 +51,7 @@ export default class AssetController implements Controller {
   }
 
   @Get("/:id")
-  @RequireAuth()
+  @RequireLogin()
   public async getAssetPack(req: ExpressRequest, res: Response): Promise<void> {
     const {
       params: { id },
@@ -61,7 +61,7 @@ export default class AssetController implements Controller {
   }
 
   @Post("/")
-  @RequireAuth()
+  @RequireLogin()
   public async createAssetPack(req: ExpressRequest, res: Response): Promise<void> {
     try {
       const {
@@ -78,7 +78,7 @@ export default class AssetController implements Controller {
   }
 
   @Put("/:id")
-  @RequireAuth()
+  @RequireLogin()
   public async updateAssetPack(req: ExpressRequest, res: Response): Promise<void> {
     try {
       const {
@@ -95,7 +95,7 @@ export default class AssetController implements Controller {
   }
 
   @Delete("/:id")
-  @RequireAuth()
+  @RequireLogin()
   public async deleteAssetPack(req: ExpressRequest, res: Response): Promise<void> {
     try {
       const {
@@ -108,9 +108,5 @@ export default class AssetController implements Controller {
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
-  }
-
-  public getApiPath(): string {
-    return AssetController.API_PATH;
   }
 }

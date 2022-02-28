@@ -1,7 +1,8 @@
 import { inject, injectable, named } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
-import { AssetPack, AssetPackDb } from "../models/AssetPack";
+import { AssetPack, AssetPackDb } from "../models/Assets/AssetPack";
+import { ResourceField, ResourceTemplate, ResourceTemplateDb } from "../models/Assets/ResourceTemplate";
 import Tag from "../models/Tag";
 import { User } from "../models/User";
 import { Factory } from "../types/Factory";
@@ -18,6 +19,7 @@ type PartialAssetPack = {
 export default class AssetService implements Service {
   public constructor(
     @inject(TYPES.Model) @named("AssetPackDb") private assetPackDb: AssetPackDb,
+    @inject(TYPES.Model) @named("ResourceTemplateDb") private resourceTemplateDb: ResourceTemplateDb,
     @inject(TYPES.ObjectId) private objectIdFactory: Factory<string, ObjectId>
   ) {}
 
@@ -105,7 +107,6 @@ export default class AssetService implements Service {
       );
       return assetPack;
     } catch (error) {
-      console.log(error);
       throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }
   }
@@ -113,6 +114,22 @@ export default class AssetService implements Service {
   public async deleteAssetPack(id: string, creator: User): Promise<void> {
     try {
       await this.assetPackDb.deleteByField({ _id: new ObjectId(id), createdBy: new ObjectId(creator.id) });
+    } catch (error) {
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
+    }
+  }
+
+  public async createResourceTemplate(
+    assetPackId: string,
+    name: string,
+    description: string,
+    createdBy: User,
+    fields: ResourceField[]
+  ): Promise<ResourceTemplate> {
+    try {
+      const resourceTemplate = await this.resourceTemplateDb.save({ createdBy, name, description, fields });
+
+      return resourceTemplate;
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }

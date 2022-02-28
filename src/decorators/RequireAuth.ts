@@ -2,10 +2,10 @@ import { NextFunction, Response } from "express-serve-static-core";
 import app from "../App";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import AuthService from "../services/AuthService";
-import { ExpressFunction } from "../types/ExpressFunction";
 import { ExpressRequest } from "../types/ExpressRequest";
+import { getOrCreateMiddleware } from "./utils";
 
-const checkToken = async (req: ExpressRequest, res: Response, next: NextFunction): Promise<void> => {
+export const verifyToken = async (req: ExpressRequest, _: Response, next: NextFunction): Promise<void> => {
   try {
     const { accesstoken } = req.headers;
     if (!accesstoken) throw new ServerException(Errors.AUTH.NO_TOKEN);
@@ -30,16 +30,11 @@ const checkToken = async (req: ExpressRequest, res: Response, next: NextFunction
   next();
 };
 
-export const RequireAuth = (permission?: string): MethodDecorator => {
+export const RequireLogin = (): MethodDecorator => {
   // target = class
-  // propertyKey = decorated Method
+  // propertyKey = decorated method key
   return (target, propertyKey: string | symbol): void => {
-    if (!Reflect.hasMetadata("middleware", target.constructor)) {
-      Reflect.defineMetadata("middleware", new Map(), target.constructor);
-    }
-
-    const middleware = Reflect.getMetadata("middleware", target.constructor) as Map<string | symbol, ExpressFunction[]>;
-
-    middleware.set(propertyKey as string, [checkToken]);
+    const middleware = getOrCreateMiddleware(target);
+    middleware.set(propertyKey as string, [verifyToken]);
   };
 };

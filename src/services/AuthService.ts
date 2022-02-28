@@ -50,7 +50,8 @@ export default class AuthService implements Service {
 
     if (!correctPassword) throw new Exception(Errors.AUTH.INVALID_CREDS);
 
-    const token = this.JWT.sign({ _id: user.id }, user.password, { expiresIn: "5h" });
+    // TODO - Temp token duration change to 5h
+    const token = this.JWT.sign({ _id: user.id }, user.password, { expiresIn: "120h" });
 
     try {
       await this.tokenDb.save({ token, device: "WEB" }, { user: new ObjectId(user.id) });
@@ -72,8 +73,7 @@ export default class AuthService implements Service {
     const tokenObj = await this.tokenDb.findOne({ token });
     if (!tokenObj) return undefined;
 
-    const user = await this.userDb.findOne({ _id: tokenObj.user });
-
+    const user = await this.userDb.queryOne({ _id: tokenObj.user }).populate("roles.role");
     if (!user) return undefined;
 
     try {
