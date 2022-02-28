@@ -1,0 +1,5 @@
+campaign::changeTitle
+campaign::changeDescription
+campaign::addTag
+campaign::removeTag
+campaign::delete

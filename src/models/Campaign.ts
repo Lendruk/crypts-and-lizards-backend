@@ -26,6 +26,7 @@ export class CampaignDb extends AbstractModel<Campaign, CampaignModel> {
         tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
         createdBy: { type: Schema.Types.ObjectId, ref: "users" },
         roles: [{ type: Schema.Types.ObjectId, ref: "roles" }],
+        customPermissionGroups: [{ type: Schema.Types.ObjectId, ref: "permissionGroups" }],
       },
       "campaigns"
     );

@@ -14,7 +14,7 @@ export default class RoleService implements Service {
   ) {}
 
   public async createRole(roleName: string, groupName: string): Promise<Role> {
-    const permissionGroup = await this.permissionService.getPermissionGroup(groupName);
+    const permissionGroup = await this.permissionService.getGlobalPermissionGroup(groupName);
 
     if (!permissionGroup) {
       throw new ServerException(Errors.RESOURCE_NOT_FOUND, "Permission Group not found");

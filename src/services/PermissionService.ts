@@ -63,8 +63,8 @@ export default class PermissionService implements Service {
     return permission;
   }
 
-  public async getPermissionGroup(shortName: string): Promise<PermissionGroup | null> {
-    const permissionGroup = await this.permissionGroupDb.findOne({ shortName });
+  public async getGlobalPermissionGroup(shortName: string): Promise<PermissionGroup | null> {
+    const permissionGroup = await this.permissionGroupDb.findOne({ shortName, global: true });
     return permissionGroup;
   }
 }

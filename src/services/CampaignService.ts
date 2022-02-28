@@ -3,6 +3,7 @@ import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
 import { Campaign, CampaignDb } from "../models/Campaign";
 import { User } from "../models/User";
+import { ExistingPermissions } from "../types/ExistingPermissions";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
 import RoleService from "./RoleService";
@@ -32,9 +33,9 @@ export default class CampaignService implements Service {
 
   public async createCampaign(user: User, title: string): Promise<void> {
     try {
-      const ownerRole = await this.roleService.createRole("Owner", "updateCampaign");
-      const editorRole = await this.roleService.createRole("Editor", "updateCampaign");
-      const viewerRole = await this.roleService.createRole("Viewer", "updateCampaign");
+      const ownerRole = await this.roleService.createRole("Owner", "campaignOwner");
+      const editorRole = await this.roleService.createRole("Editor", "campaignOwner");
+      const viewerRole = await this.roleService.createRole("Viewer", "campaignOwner");
 
       const newCampaign = await this.campaignDb.save({
         createdBy: user.id,
@@ -47,9 +48,22 @@ export default class CampaignService implements Service {
     }
   }
 
-  public async updateCampaign(campaignId: ObjectId, payload: Partial<Campaign>): Promise<Campaign> {
+  public async updateCampaign(
+    campaignId: ObjectId,
+    rawPayload: Partial<Campaign>,
+    obtainedPermissions: ExistingPermissions[]
+  ): Promise<Campaign> {
     try {
-      const updatedCampaign = await this.campaignDb.findOneAndUpdate({ _id: campaignId }, payload, { new: true });
+      const updatePayload: Partial<Campaign> = {};
+      for (const obtainedPermission of obtainedPermissions) {
+        if (rawPayload.title && obtainedPermission === "campaign::changeTitle") {
+          updatePayload.title = rawPayload.title;
+        } else if (rawPayload.description && obtainedPermission === "campaign::changeDescription") {
+          updatePayload.description = rawPayload.description;
+        }
+      }
+
+      const updatedCampaign = await this.campaignDb.findOneAndUpdate({ _id: campaignId }, updatePayload, { new: true });
       return updatedCampaign;
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR, error as Error);

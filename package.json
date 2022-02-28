@@ -7,8 +7,10 @@
   "scripts": {
     "test": "jest",
     "coverage": "npm t -- --coverage",
+    "lint": "eslint",
     "start": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules ./src/App.ts",
-    "createPermissions": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules ./src/scripts/createPermissions"
+    "createPermissions:types": "ts-node-dev --transpile-only --ignore-watch node_modules ./src/scripts/createPermissionsType.ts && eslint --fix ./src/types/ExistingPermissions.ts",
+    "createPermissions": "ts-node-dev --transpile-only --ignore-watch node_modules ./src/scripts/createPermissions"
   },
   "keywords": [
     "Node",

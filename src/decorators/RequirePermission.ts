@@ -3,6 +3,7 @@ import app from "../App";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { Role } from "../models/Role";
 import PermissionService from "../services/PermissionService";
+import { ExistingPermissions } from "../types/ExistingPermissions";
 import { ExpressRequest } from "../types/ExpressRequest";
 import { verifyToken } from "./RequireAuth";
 import { getOrCreateMiddleware } from "./utils";
@@ -14,7 +15,7 @@ export const verifyPermissions =
       user,
       params: { id },
     } = req;
-    const obtainedPermissions: string[] = [];
+    const obtainedPermissions: ExistingPermissions[] = [];
 
     // get the permission
     const permissionService = app.container.getNamed<PermissionService>(PermissionService, "PermissionService");
@@ -53,7 +54,7 @@ export const verifyPermissions =
     next();
   };
 
-type RequirePermissionOptions = { mandatory?: string[]; optional?: string[] };
+type RequirePermissionOptions = { mandatory?: ExistingPermissions[]; optional?: ExistingPermissions[] };
 export const RequirePermission = (options: RequirePermissionOptions): MethodDecorator => {
   return (target, propertyKey: string | symbol): void => {
     // const path = Reflect.getMetadata("baseRoute", target);

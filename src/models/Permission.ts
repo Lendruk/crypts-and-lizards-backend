@@ -27,6 +27,7 @@ export interface PermissionGroup extends Model {
   shortName: string;
   description: string;
   permissions: Permission[];
+  global: boolean;
 }
 interface PermissionGroupModel extends PermissionGroup, Document {}
 export class PermissionGroupDb extends AbstractModel<PermissionGroup, PermissionGroupModel> {
@@ -36,6 +37,7 @@ export class PermissionGroupDb extends AbstractModel<PermissionGroup, Permission
         name: { type: String },
         description: { type: String },
         shortName: { type: String },
+        global: { type: Boolean, default: false },
         permissions: [{ type: Schema.Types.ObjectId, ref: "permissions" }],
       },
       "permissionGroups"

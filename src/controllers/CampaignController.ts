@@ -36,17 +36,18 @@ export default class CampaignController implements Controller {
   }
 
   @Put("/:id")
-  @RequirePermission({ optional: ["changeName"] })
+  @RequirePermission({ optional: ["campaign::changeTitle", "campaign::changeDescription"] })
   public async updateCampaign(req: ExpressRequest, res: Response): Promise<void> {
     const {
       body,
       params: { id },
     } = req;
-    const updatedCampaign = await this.campaignService.updateCampaign(new ObjectId(id), body);
+    const updatedCampaign = await this.campaignService.updateCampaign(new ObjectId(id), body, req.currentPermissions);
     res.status(200).send(updatedCampaign);
   }
 
   @Delete("/:id")
+  @RequirePermission({ mandatory: ["campaign::delete"] })
   public async deleteCampaign(req: ExpressRequest, res: Response): Promise<void> {
     const {
       params: { id },
