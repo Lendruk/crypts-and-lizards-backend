@@ -7,6 +7,7 @@ import ItemController from "../../controllers/ItemController";
 import AssetController from "../../controllers/AssetController";
 import MapController from "../../controllers/MapController";
 import CampaignController from "../../controllers/CampaignController";
+import PermissionController from "../../controllers/PermissionController";
 
 class ControllerModule {
   private module: ContainerModule;
@@ -18,6 +19,10 @@ class ControllerModule {
       bind<Controller>(TYPES.Controller).to(DebugController).inSingletonScope().whenTargetNamed("DebugController");
       bind<Controller>(TYPES.Controller).to(AssetController).inSingletonScope().whenTargetNamed("AssetController");
       bind<Controller>(TYPES.Controller).to(MapController).inSingletonScope().whenTargetNamed("MapController");
+      bind<Controller>(TYPES.Controller)
+        .to(PermissionController)
+        .inSingletonScope()
+        .whenTargetNamed("PermissionController");
       bind<Controller>(TYPES.Controller)
         .to(CampaignController)
         .inSingletonScope()

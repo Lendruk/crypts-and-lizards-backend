@@ -6,6 +6,7 @@ import { User } from "../models/User";
 import { ExistingPermissions } from "../types/ExistingPermissions";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
+import PermissionService from "./PermissionService";
 import RoleService from "./RoleService";
 import UserService from "./UserService";
 
@@ -14,7 +15,8 @@ export default class CampaignService implements Service {
   public constructor(
     @inject(TYPES.Model) @named("CampaignDb") private campaignDb: CampaignDb,
     @inject(TYPES.Service) @named("RoleService") private roleService: RoleService,
-    @inject(TYPES.Service) @named("UserService") private userService: UserService
+    @inject(TYPES.Service) @named("UserService") private userService: UserService,
+    @inject(TYPES.Service) @named("PermissionService") private permissionService: PermissionService
   ) {}
 
   public async start(): Promise<void> {
@@ -48,21 +50,32 @@ export default class CampaignService implements Service {
     }
   }
 
-  public async updateCampaign(
+  public async createCustomPermissionGroup(
     campaignId: ObjectId,
-    rawPayload: Partial<Campaign>,
-    obtainedPermissions: ExistingPermissions[]
+    groupName: string,
+    groupDescription: string,
+    permissions: string[]
   ): Promise<Campaign> {
     try {
-      const updatePayload: Partial<Campaign> = {};
-      for (const obtainedPermission of obtainedPermissions) {
-        if (rawPayload.title && obtainedPermission === "campaign::changeTitle") {
-          updatePayload.title = rawPayload.title;
-        } else if (rawPayload.description && obtainedPermission === "campaign::changeDescription") {
-          updatePayload.description = rawPayload.description;
-        }
-      }
+      const newPermisionGroup = await this.permissionService.createPermissionGroup(
+        groupName,
+        groupDescription,
+        groupName.trim().toLowerCase().replace(" ", "-"),
+        permissions
+      );
+      const updatedCampaign = await this.campaignDb.findOneAndUpdate(
+        { _id: campaignId },
+        { $push: { customPermissionGroups: newPermisionGroup } }
+      );
 
+      return updatedCampaign;
+    } catch (error) {
+      throw new ServerException(Errors.SERVER_ERROR, error as Error);
+    }
+  }
+
+  public async updateCampaign(campaignId: ObjectId, updatePayload: Partial<Campaign>): Promise<Campaign> {
+    try {
       const updatedCampaign = await this.campaignDb.findOneAndUpdate({ _id: campaignId }, updatePayload, { new: true });
       return updatedCampaign;
     } catch (error) {

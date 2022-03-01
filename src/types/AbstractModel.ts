@@ -95,7 +95,7 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
 
   public async save(
     data: Partial<ModelData>,
-    refs?: { [P in keyof Partial<ModelData>]: string | ObjectId }
+    refs?: { [P in keyof Partial<ModelData>]: string | ObjectId | string[] | ObjectId[] }
   ): Promise<ModelData> {
     let objPayload = data;
     if (refs) {

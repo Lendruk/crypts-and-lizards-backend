@@ -1,6 +1,6 @@
 /**
  * THIS FILE WAS GENERATED AUTOMATICALLY DO NOT EDIT
- * Last Gen. Mon Feb 28 2022
+ * Last Gen. Tue Mar 01 2022
  */
 
 export type ExistingPermissions =
@@ -8,4 +8,6 @@ export type ExistingPermissions =
   | "campaign::changeDescription"
   | "campaign::addTag"
   | "campaign::removeTag"
-  | "campaign::delete";
+  | "campaign::delete"
+  | "campaign::createPermGroup"
+  | "campaign::deletePermGroup";

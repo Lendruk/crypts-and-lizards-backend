@@ -1,6 +1,8 @@
 import { Document, Schema } from "mongoose";
 import AbstractModel from "../types/AbstractModel";
+import { ObjectId } from "../utils/ObjectId";
 import { AssetPack } from "./Assets/AssetPack";
+import { PermissionGroup } from "./Permission";
 import Tag from "./Tag";
 
 export interface Campaign {
@@ -12,6 +14,7 @@ export interface Campaign {
   forkedFrom: Campaign;
   createdBy: string;
   roles: string[];
+  customPermissionGroups: PermissionGroup[] | ObjectId[];
 }
 
 interface CampaignModel extends Campaign, Document {}

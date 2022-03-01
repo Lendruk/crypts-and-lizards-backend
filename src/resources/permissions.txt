@@ -3,3 +3,5 @@ campaign::changeDescription
 campaign::addTag
 campaign::removeTag
 campaign::delete
+campaign::createPermGroup
+campaign::deletePermGroup

@@ -9,6 +9,7 @@ import { Delete, Get, Post, Put } from "../decorators/ControllerRoute";
 import { ExpressRequest } from "../types/ExpressRequest";
 import { ObjectId } from "../utils/ObjectId";
 import { Route } from "../decorators/Route";
+import { Campaign } from "../models/Campaign";
 
 @injectable()
 @Route("/campaigns")
@@ -42,7 +43,16 @@ export default class CampaignController implements Controller {
       body,
       params: { id },
     } = req;
-    const updatedCampaign = await this.campaignService.updateCampaign(new ObjectId(id), body, req.currentPermissions);
+    const updatePayload: Partial<Campaign> = {};
+    for (const obtainedPermission of req.currentPermissions) {
+      if (body.title && obtainedPermission === "campaign::changeTitle") {
+        updatePayload.title = body.title;
+      } else if (body.description && obtainedPermission === "campaign::changeDescription") {
+        updatePayload.description = body.description;
+      }
+    }
+
+    const updatedCampaign = await this.campaignService.updateCampaign(new ObjectId(id), updatePayload);
     res.status(200).send(updatedCampaign);
   }
 

@@ -1,6 +1,7 @@
 import { Document, Schema } from "mongoose";
 import AbstractModel from "../types/AbstractModel";
 import { Model } from "../types/Model";
+import { ObjectId } from "../utils/ObjectId";
 
 export interface Permission extends Model {
   name: string;
@@ -26,7 +27,7 @@ export interface PermissionGroup extends Model {
   name: string;
   shortName: string;
   description: string;
-  permissions: Permission[];
+  permissions: Permission[] | ObjectId[];
   global: boolean;
 }
 interface PermissionGroupModel extends PermissionGroup, Document {}

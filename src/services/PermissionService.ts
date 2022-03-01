@@ -16,17 +16,29 @@ export default class PermissionService implements Service {
     /* */
   }
 
-  public async createPermissionGroup(name: string, description: string, shortName: string): Promise<PermissionGroup> {
-    const newPermissionGroup = await this.permissionGroupDb.save({ name, description, shortName });
+  public async createPermissionGroup(
+    name: string,
+    description: string,
+    shortName: string,
+    permissions: string[] = []
+  ): Promise<PermissionGroup> {
+    const newPermissionGroup = await this.permissionGroupDb.save({ name, description, shortName }, { permissions });
     return newPermissionGroup;
   }
 
   public async groupContainsPermission(group: ObjectId | PermissionGroup, permissionName: string): Promise<boolean> {
     const permissionGroup = await this.permissionGroupDb.queryOne({ _id: group }).populate("permissions");
-    if (permissionGroup?.permissions.find((permission) => permission.shortName === permissionName)) {
-      return true;
+    if (permissionGroup) {
+      const permissions = permissionGroup.permissions as Permission[];
+      if (permissions.find((permission) => permission.shortName === permissionName)) {
+        return true;
+      }
     }
     return false;
+  }
+
+  public deletePermissionGroup(groupId: ObjectId): Promise<void> {
+    return this.permissionGroupDb.deleteById(groupId);
   }
 
   public async addPermissionToGroup(permissionShortName: string, group: ObjectId): Promise<PermissionGroup> {
