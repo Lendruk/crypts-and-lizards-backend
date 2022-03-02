@@ -13,7 +13,12 @@ export default class RoleService implements Service {
     @inject(TYPES.Service) @named("PermissionService") private permissionService: PermissionService
   ) {}
 
-  public async createRole(roleName: string, groupName: string): Promise<Role> {
+  public async createRole(roleName: string, groups: string[], permissions: string[]): Promise<Role> {
+    const role = await this.roleDb.save({ name: roleName }, { groups, permissions });
+    return role;
+  }
+
+  public async createDefaultRole(roleName: string, groupName: string): Promise<Role> {
     const permissionGroup = await this.permissionService.getGlobalPermissionGroup(groupName);
 
     if (!permissionGroup) {
@@ -34,6 +39,14 @@ export default class RoleService implements Service {
 
   public async deleteRole(roleId: ObjectId): Promise<void> {
     return this.roleDb.deleteById(roleId);
+  }
+
+  public async addUserToRole(userToAdd: ObjectId, roleId: ObjectId): Promise<void> {
+    //TODO
+  }
+
+  public async removeUserFromRole(userToRemove: ObjectId, roleId: ObjectId): Promise<void> {
+    //TODO
   }
 
   public async start(): Promise<void> {
