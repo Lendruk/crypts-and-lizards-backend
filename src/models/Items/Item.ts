@@ -1,6 +1,7 @@
 import { model, Schema, Types } from "mongoose";
+import { ObjectId } from "../../utils/ObjectId";
 import Category from "../Category";
-import Currency from "./Currency";
+import { User } from "../User";
 
 export interface Weapon {
   damage1: string;
@@ -13,19 +14,17 @@ interface Item<T> {
   name: string;
   weight: number;
   value: number;
-  currency: Currency;
   description: string;
-  createdBy: Types.ObjectId;
   category: Category;
   properties: T;
+  createdBy: User | ObjectId;
 }
 
 const ItemSchema = new Schema<Item<any>>({
   name: { type: String },
   weight: { type: Number, default: 0 },
   value: { type: Number, default: 0 },
-  currency: { type: Schema.Types.ObjectId, ref: "Currency", default: null },
-  createdBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
+  createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   category: { type: Schema.Types.ObjectId, ref: "Category" },
 });
 
