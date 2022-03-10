@@ -1,12 +1,12 @@
 import { inject, injectable, named } from "inversify";
 import { Service } from "../types/Service";
 import * as BCrypt from "bcryptjs";
-import { User, UserDb } from "../models/User";
+import { User, UserCollection } from "../models/User";
 import jwt from "jsonwebtoken";
 import { Errors, Exception, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
 import { ObjectId } from "../utils/ObjectId";
-import { TokenDb } from "../models/Token";
+import { TokenCollection } from "../models/Token";
 
 type LoginReturns = {
   accessToken: string;
@@ -19,8 +19,8 @@ type LoginReturns = {
 @injectable()
 export default class AuthService implements Service {
   public constructor(
-    @inject(TYPES.Model) @named("User") private userDb: UserDb,
-    @inject(TYPES.Model) @named("Token") private tokenDb: TokenDb,
+    @inject(TYPES.Model) @named("User") private userDb: UserCollection,
+    @inject(TYPES.Model) @named("Token") private tokenDb: TokenCollection,
     @inject(TYPES.BCrypt) private bCrypt: typeof BCrypt,
     @inject(TYPES.JWT) private JWT: typeof jwt
   ) {}

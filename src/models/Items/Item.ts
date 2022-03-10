@@ -1,14 +1,7 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Schema } from "mongoose";
 import { ObjectId } from "../../utils/ObjectId";
-import Category from "../Category";
+import { Category } from "../Category";
 import { User } from "../User";
-
-export interface Weapon {
-  damage1: string;
-  damage2: string;
-  damageType: string;
-  properties: string[];
-}
 
 interface Item<T> {
   name: string;

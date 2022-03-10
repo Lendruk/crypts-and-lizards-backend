@@ -1,9 +1,11 @@
 import { Document, Schema } from "mongoose";
 import AbstractModel from "../types/AbstractModel";
 import { ObjectId } from "../utils/ObjectId";
-import { AssetPack } from "./Assets/AssetPack";
-import { PermissionGroup } from "./Permission";
+import { AssetPack, AssetPackCollection } from "./Assets/AssetPack";
+import { PermissionGroup, PermissionGroupCollection } from "./Permission";
+import { RoleCollection } from "./Role";
 import Tag from "./Tag";
+import { UserCollection } from "./User";
 
 export interface Campaign {
   id?: any;
@@ -18,20 +20,17 @@ export interface Campaign {
 }
 
 interface CampaignModel extends Campaign, Document {}
-export class CampaignDb extends AbstractModel<Campaign, CampaignModel> {
+export class CampaignCollection extends AbstractModel<Campaign, CampaignModel> {
   public constructor() {
-    super(
-      {
-        title: { type: String },
-        description: { type: String },
-        forkedFrom: { type: Schema.Types.ObjectId, ref: "campaigns" },
-        assetPacks: [{ type: Schema.Types.ObjectId, ref: "assetPacks" }],
-        tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
-        createdBy: { type: Schema.Types.ObjectId, ref: "users" },
-        roles: [{ type: Schema.Types.ObjectId, ref: "roles" }],
-        customPermissionGroups: [{ type: Schema.Types.ObjectId, ref: "permissionGroups" }],
-      },
-      "campaigns"
-    );
+    super({
+      title: { type: String },
+      description: { type: String },
+      forkedFrom: { type: Schema.Types.ObjectId, ref: CampaignCollection },
+      assetPacks: [{ type: Schema.Types.ObjectId, ref: AssetPackCollection }],
+      tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
+      createdBy: { type: Schema.Types.ObjectId, ref: UserCollection },
+      roles: [{ type: Schema.Types.ObjectId, ref: RoleCollection }],
+      customPermissionGroups: [{ type: Schema.Types.ObjectId, ref: PermissionGroupCollection }],
+    });
   }
 }

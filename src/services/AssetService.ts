@@ -1,8 +1,8 @@
 import { inject, injectable, named } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
-import { AssetPack, AssetPackDb } from "../models/Assets/AssetPack";
-import { ResourceField, ResourceTemplate, ResourceTemplateDb } from "../models/Assets/ResourceTemplate";
+import { AssetPack, AssetPackCollection } from "../models/Assets/AssetPack";
+import { ResourceField, ResourceTemplate, ResourceTemplateCollection } from "../models/Assets/ResourceTemplate";
 import Tag from "../models/Tag";
 import { User } from "../models/User";
 import { Factory } from "../types/Factory";
@@ -18,8 +18,8 @@ type PartialAssetPack = {
 @injectable()
 export default class AssetService implements Service {
   public constructor(
-    @inject(TYPES.Model) @named("AssetPackDb") private assetPackDb: AssetPackDb,
-    @inject(TYPES.Model) @named("ResourceTemplateDb") private resourceTemplateDb: ResourceTemplateDb,
+    @inject(TYPES.Model) @named("AssetPackDb") private assetPackDb: AssetPackCollection,
+    @inject(TYPES.Model) @named("ResourceTemplateDb") private resourceTemplateDb: ResourceTemplateCollection,
     @inject(TYPES.ObjectId) private objectIdFactory: Factory<string, ObjectId>
   ) {}
 

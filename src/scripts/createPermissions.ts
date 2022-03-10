@@ -1,17 +1,17 @@
 import "reflect-metadata";
 import { config } from "dotenv";
 config();
-import { PermissionDb, PermissionGroupDb } from "../models/Permission";
+import { PermissionCollection, PermissionGroupCollection } from "../models/Permission";
 import { connectDb } from "../database/Database";
-import { CampaignDb } from "../models/Campaign";
-import { RoleDb } from "../models/Role";
+import { CampaignCollection } from "../models/Campaign";
+import { RoleCollection } from "../models/Role";
 
 async function createPermissions(): Promise<void> {
   await connectDb();
-  const permissionDb = new PermissionDb();
-  const campaignDb = new CampaignDb();
-  const roleDb = new RoleDb();
-  const permissionGroupDb = new PermissionGroupDb();
+  const permissionDb = new PermissionCollection();
+  const campaignDb = new CampaignCollection();
+  const roleDb = new RoleCollection();
+  const permissionGroupDb = new PermissionGroupCollection();
   // const permissionService = new PermissionService(permissionDb, permissionGroupDb);
 
   await campaignDb.deleteAll();

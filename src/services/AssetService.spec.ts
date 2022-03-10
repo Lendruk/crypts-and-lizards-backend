@@ -1,12 +1,13 @@
-import { AssetPackDb } from "../models/Assets/AssetPack";
+import { AssetPackCollection } from "../models/Assets/AssetPack";
+import { ResourceTemplateCollection } from "../models/Assets/ResourceTemplate";
 import { User } from "../models/User";
 import { createModelMock, createQueryMockReturn, TypedJestMock } from "../test/utils/testUtils";
-import { ObjectId } from "../utils/ObjectId";
 import AssetService from "./AssetService";
 
 describe("AssetService", () => {
   let cut: AssetService;
-  let assetPackDbMock: TypedJestMock<AssetPackDb>;
+  let assetPackDbMock: TypedJestMock<AssetPackCollection>;
+  let resourceTemplateCollectionMock: TypedJestMock<ResourceTemplateCollection>;
   let objectIdFactoryMock: jest.Mock;
 
   const MOCK_USER: User = {
@@ -15,6 +16,7 @@ describe("AssetService", () => {
     usedAssets: { assetPacks: [] },
     username: "mock_username",
     id: "mock_id",
+    roles: [],
   };
 
   const MOCK_ASSET = {
@@ -35,7 +37,8 @@ describe("AssetService", () => {
   beforeEach(() => {
     objectIdFactoryMock = jest.fn();
     assetPackDbMock = createModelMock();
-    cut = new AssetService(assetPackDbMock as any, objectIdFactoryMock as any);
+    resourceTemplateCollectionMock = createModelMock();
+    cut = new AssetService(assetPackDbMock as any, resourceTemplateCollectionMock as any, objectIdFactoryMock as any);
   });
 
   describe("getMyAssets", () => {

@@ -1,19 +1,19 @@
-import { model, Schema } from "mongoose";
+import { Document, Schema } from "mongoose";
+import AbstractModel from "../types/AbstractModel";
+import { ObjectId } from "../utils/ObjectId";
 
-interface Category {
+export interface Category {
   name: string;
   subCategories: Category[];
-  parent?: Category;
+  parent?: Category | ObjectId;
 }
-
-const CategorySchema = new Schema<Category>(
-  {
-    name: { type: String },
-    subCategories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
-    parent: { type: Schema.Types.ObjectId, ref: "Category", default: null },
-  },
-  { timestamps: { createdAt: "_created", updatedAt: "_modified" } }
-);
-
-const Category = model<Category>("Category", CategorySchema);
-export default Category;
+interface CategoryModel extends Category, Document {}
+export class CategoryCollection extends AbstractModel<Category, CategoryModel> {
+  public constructor() {
+    super({
+      name: { type: String },
+      subCategories: [{ type: Schema.Types.ObjectId, ref: CategoryCollection }],
+      parent: { type: Schema.Types.ObjectId, ref: CategoryCollection },
+    });
+  }
+}

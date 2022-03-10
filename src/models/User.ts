@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { Document, Schema, Types } from "mongoose";
 import AbstractModel from "../types/AbstractModel";
 import { ObjectId } from "../utils/ObjectId";
-import { Role } from "./Role";
+import { Role, RoleCollection } from "./Role";
 
 type UserRole = {
   role: Role | ObjectId;
@@ -26,7 +26,7 @@ interface UsedAssets {
 }
 
 @injectable()
-export class UserDb extends AbstractModel<User, UserModel> {
+export class UserCollection extends AbstractModel<User, UserModel> {
   public constructor() {
     super(
       {
@@ -35,13 +35,12 @@ export class UserDb extends AbstractModel<User, UserModel> {
         password: { type: String },
         roles: [
           {
-            role: { type: Schema.Types.ObjectId, ref: "roles" },
+            role: { type: Schema.Types.ObjectId, ref: RoleCollection },
             modelName: { type: Schema.Types.String },
             entity: { type: Schema.Types.ObjectId },
           },
         ],
       },
-      "users",
       { timestamps: { createdAt: "_created" } }
     );
   }

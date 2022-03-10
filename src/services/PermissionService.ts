@@ -1,15 +1,15 @@
 import { inject, injectable, named } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
-import { Permission, PermissionDb, PermissionGroup, PermissionGroupDb } from "../models/Permission";
+import { Permission, PermissionCollection, PermissionGroup, PermissionGroupCollection } from "../models/Permission";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
 
 @injectable()
 export default class PermissionService implements Service {
   public constructor(
-    @inject(TYPES.Model) @named("PermissionDb") private permissionDb: PermissionDb,
-    @inject(TYPES.Model) @named("PermissionGroupDb") private permissionGroupDb: PermissionGroupDb
+    @inject(TYPES.Model) @named("PermissionDb") private permissionDb: PermissionCollection,
+    @inject(TYPES.Model) @named("PermissionGroupDb") private permissionGroupDb: PermissionGroupCollection
   ) {}
 
   public async start(): Promise<void> {

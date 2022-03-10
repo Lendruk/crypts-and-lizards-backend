@@ -1,7 +1,7 @@
 import { inject, injectable, named } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
-import { Campaign, CampaignDb } from "../models/Campaign";
+import { Campaign, CampaignCollection } from "../models/Campaign";
 import { PermissionGroup } from "../models/Permission";
 import { Role } from "../models/Role";
 import { User } from "../models/User";
@@ -14,7 +14,7 @@ import UserService from "./UserService";
 @injectable()
 export default class CampaignService implements Service {
   public constructor(
-    @inject(TYPES.Model) @named("CampaignDb") private campaignDb: CampaignDb,
+    @inject(TYPES.Model) @named("CampaignDb") private campaignDb: CampaignCollection,
     @inject(TYPES.Service) @named("RoleService") private roleService: RoleService,
     @inject(TYPES.Service) @named("UserService") private userService: UserService,
     @inject(TYPES.Service) @named("PermissionService") private permissionService: PermissionService

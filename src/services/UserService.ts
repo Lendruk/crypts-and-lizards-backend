@@ -1,7 +1,7 @@
 import { inject, injectable, named } from "inversify";
 import { TYPES } from "../ioc/Types";
 import { Role } from "../models/Role";
-import { User, UserDb } from "../models/User";
+import { User, UserCollection } from "../models/User";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
 
@@ -12,7 +12,7 @@ type UserUpdatePayload = {
 
 @injectable()
 export default class UserService implements Service {
-  public constructor(@inject(TYPES.Model) @named("User") private userModel: UserDb) {}
+  public constructor(@inject(TYPES.Model) @named("User") private userModel: UserCollection) {}
 
   public async start(): Promise<void> {
     /* */

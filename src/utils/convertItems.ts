@@ -1,6 +1,5 @@
 import * as xml2json from "xml2json";
 import * as fs from "fs/promises";
-import Currency from "../models/Items/Currency";
 
 export async function convertItems(): Promise<void> {
   const xmlInput = await fs.readFile("./src/resources/DnD-Data/Items/Mundane-Items.xml");
@@ -113,7 +112,7 @@ export async function createBaseCurrencies(): Promise<void> {
     },
   ];
 
-  await Currency.insertMany(
-    currencies.map((currency) => ({ ...currency, description: currency.description.join("\n") }))
-  );
+  // await Currency.insertMany(
+  //   currencies.map((currency) => ({ ...currency, description: currency.description.join("\n") }))
+  // );
 }

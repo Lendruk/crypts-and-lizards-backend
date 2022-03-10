@@ -1,5 +1,5 @@
-import { TokenDb } from "../models/Token";
-import { User, UserDb } from "../models/User";
+import { TokenCollection } from "../models/Token";
+import { User, UserCollection } from "../models/User";
 import { createBCryptMock } from "../test/mocks/libraries/BCryptMock";
 import { createModelMock, TypedJestMock } from "../test/utils/testUtils";
 import AuthService from "./AuthService";
@@ -11,8 +11,8 @@ jest.mock("../utils/ObjectId", () => ({ ObjectId: jest.fn().mockImplementation((
 
 describe("MapService", () => {
   let cut: AuthService;
-  let userDbMock: TypedJestMock<UserDb>;
-  let tokenDbMock: TypedJestMock<TokenDb>;
+  let userDbMock: TypedJestMock<UserCollection>;
+  let tokenDbMock: TypedJestMock<TokenCollection>;
   let bCryptMock: TypedJestMock<typeof BCrypt>;
   let jwtMock: TypedJestMock<typeof jwt>;
 
@@ -26,6 +26,7 @@ describe("MapService", () => {
     usedAssets: { assetPacks: [] },
     username: "mock_username",
     id: "mock_id",
+    roles: [],
   };
 
   beforeEach(() => {

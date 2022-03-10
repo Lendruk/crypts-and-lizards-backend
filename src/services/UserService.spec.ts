@@ -1,4 +1,4 @@
-import { User, UserDb } from "../models/User";
+import { User, UserCollection } from "../models/User";
 import { createModelMock, TypedJestMock } from "../test/utils/testUtils";
 import UserService from "./UserService";
 
@@ -6,13 +6,14 @@ jest.mock("../utils/ObjectId", () => ({ ObjectId: jest.fn().mockImplementation((
 
 describe("UserService", () => {
   let cut: UserService;
-  let userDbMock: TypedJestMock<UserDb>;
+  let userDbMock: TypedJestMock<UserCollection>;
   const MOCK_USER: User = {
     email: "mock_email",
     password: "mock_password",
     usedAssets: { assetPacks: [] },
     username: "mock_username",
     id: "id",
+    roles: [],
   };
 
   beforeEach(() => {

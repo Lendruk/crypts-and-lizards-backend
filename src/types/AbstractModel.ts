@@ -23,11 +23,10 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
 
   public constructor(
     schemaDef: SchemaDefinition,
-    modelName: string,
     schemaOptions?: SchemaOptions,
     indexOptions?: { fields: IndexDefinition; options?: IndexOptions }
   ) {
-    this.name = modelName;
+    this.name = this.constructor.name.replace("Collection", "");
     let options: SchemaOptions = {
       collection: this.name,
       timestamps: { createdAt: "_created", updatedAt: "_modified" },

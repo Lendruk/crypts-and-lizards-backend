@@ -1,7 +1,7 @@
 import { inject, injectable, named } from "inversify";
 import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
-import { Role, RoleDb } from "../models/Role";
+import { Role, RoleCollection } from "../models/Role";
 import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
 import PermissionService from "./PermissionService";
@@ -9,7 +9,7 @@ import PermissionService from "./PermissionService";
 @injectable()
 export default class RoleService implements Service {
   public constructor(
-    @inject(TYPES.Model) @named("RoleDb") private roleDb: RoleDb,
+    @inject(TYPES.Model) @named("RoleDb") private roleDb: RoleCollection,
     @inject(TYPES.Service) @named("PermissionService") private permissionService: PermissionService
   ) {}
 

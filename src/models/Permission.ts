@@ -10,16 +10,13 @@ export interface Permission extends Model {
 }
 
 interface PermissionModel extends Permission, Document {}
-export class PermissionDb extends AbstractModel<Permission, PermissionModel> {
+export class PermissionCollection extends AbstractModel<Permission, PermissionModel> {
   public constructor() {
-    super(
-      {
-        name: { type: String },
-        description: { type: String },
-        shortName: { type: String },
-      },
-      "permissions"
-    );
+    super({
+      name: { type: String },
+      description: { type: String },
+      shortName: { type: String },
+    });
   }
 }
 
@@ -31,17 +28,14 @@ export interface PermissionGroup extends Model {
   global: boolean;
 }
 interface PermissionGroupModel extends PermissionGroup, Document {}
-export class PermissionGroupDb extends AbstractModel<PermissionGroup, PermissionGroupModel> {
+export class PermissionGroupCollection extends AbstractModel<PermissionGroup, PermissionGroupModel> {
   public constructor() {
-    super(
-      {
-        name: { type: String },
-        description: { type: String },
-        shortName: { type: String },
-        global: { type: Boolean, default: false },
-        permissions: [{ type: Schema.Types.ObjectId, ref: "permissions" }],
-      },
-      "permissionGroups"
-    );
+    super({
+      name: { type: String },
+      description: { type: String },
+      shortName: { type: String },
+      global: { type: Boolean, default: false },
+      permissions: [{ type: Schema.Types.ObjectId, ref: PermissionCollection }],
+    });
   }
 }
