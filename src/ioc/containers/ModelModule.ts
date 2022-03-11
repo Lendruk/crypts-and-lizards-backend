@@ -15,16 +15,19 @@ class ModelModule {
     this.module = new ContainerModule((bind: interfaces.Bind) => {
       bind<UserCollection>(TYPES.Model).to(UserCollection).inSingletonScope().whenTargetNamed("User");
       bind<TokenCollection>(TYPES.Model).to(TokenCollection).inSingletonScope().whenTargetNamed("Token");
-      bind<AssetPackCollection>(TYPES.Model).to(AssetPackCollection).inSingletonScope().whenTargetNamed("AssetPackDb");
+      bind<AssetPackCollection>(TYPES.Model)
+        .to(AssetPackCollection)
+        .inSingletonScope()
+        .whenTargetNamed("AssetPackCollection");
       bind<CampaignCollection>(TYPES.Model).to(CampaignCollection).inSingletonScope().whenTargetNamed("CampaignDb");
       bind<PermissionCollection>(TYPES.Model)
         .to(PermissionCollection)
         .inSingletonScope()
-        .whenTargetNamed("PermissionDb");
+        .whenTargetNamed("PermissionCollection");
       bind<PermissionGroupCollection>(TYPES.Model)
         .to(PermissionGroupCollection)
         .inSingletonScope()
-        .whenTargetNamed("PermissionGroupDb");
+        .whenTargetNamed("PermissionGroupCollection");
       bind<RoleCollection>(TYPES.Model).to(RoleCollection).inSingletonScope().whenTargetNamed("RoleDb");
       bind<ResourceTemplateCollection>(TYPES.Model)
         .to(ResourceTemplateCollection)

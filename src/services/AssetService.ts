@@ -6,8 +6,10 @@ import { ResourceField, ResourceTemplate, ResourceTemplateCollection } from "../
 import Tag from "../models/Tag";
 import { User } from "../models/User";
 import { Factory } from "../types/Factory";
-import { Service } from "../types/Service";
 import { ObjectId } from "../utils/ObjectId";
+import UserManagedService from "./generic/UserManagedService";
+import PermissionService from "./PermissionService";
+import RoleService from "./RoleService";
 
 type PartialAssetPack = {
   title: string;
@@ -16,24 +18,28 @@ type PartialAssetPack = {
 };
 
 @injectable()
-export default class AssetService implements Service {
+export default class AssetService extends UserManagedService {
   public constructor(
-    @inject(TYPES.Model) @named("AssetPackDb") private assetPackDb: AssetPackCollection,
+    @inject(TYPES.Model) @named("AssetPackCollection") private assetPackCollection: AssetPackCollection,
     @inject(TYPES.Model) @named("ResourceTemplateDb") private resourceTemplateDb: ResourceTemplateCollection,
-    @inject(TYPES.ObjectId) private objectIdFactory: Factory<string, ObjectId>
-  ) {}
+    @inject(TYPES.ObjectId) private objectIdFactory: Factory<string, ObjectId>,
+    @inject(TYPES.Service) @named("RoleService") protected roleService: RoleService,
+    @inject(TYPES.Service) @named("PermissionService") protected permissionService: PermissionService
+  ) {
+    super(roleService, permissionService, assetPackCollection);
+  }
 
   public async start(): Promise<void> {
     /* */
   }
 
   public async getAssetPacks(): Promise<AssetPack[]> {
-    return await this.assetPackDb.all();
+    return await this.assetPackCollection.all();
   }
 
   public async getMyAssets(user: User): Promise<AssetPack[]> {
     try {
-      const assets = await this.assetPackDb.queryByField({ createdBy: user.id }).populate("tags").lean();
+      const assets = await this.assetPackCollection.queryByField({ createdBy: user.id }).populate("tags").lean();
       return assets;
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR, error as Error);
@@ -43,7 +49,7 @@ export default class AssetService implements Service {
   public async getAssetPack(id: string): Promise<AssetPack> {
     let assetPack: AssetPack | null;
     try {
-      assetPack = await this.assetPackDb
+      assetPack = await this.assetPackCollection
         .queryOne({ _id: this.objectIdFactory(id) })
         .populate("tags")
         .lean();
@@ -75,7 +81,7 @@ export default class AssetService implements Service {
         }
       }
       updatePayload.tags = finalTagPayload;
-      assetPack = await this.assetPackDb.findOneAndUpdate(
+      assetPack = await this.assetPackCollection.findOneAndUpdate(
         { _id: this.objectIdFactory(id), createdBy: user.id },
         updatePayload,
         {
@@ -96,7 +102,7 @@ export default class AssetService implements Service {
   public async createAssetPack(options: { title: string; description?: string; creator: User }): Promise<AssetPack> {
     const { title, creator, description } = options;
     try {
-      const assetPack = await this.assetPackDb.save(
+      const assetPack = await this.assetPackCollection.save(
         {
           title,
           description: description || undefined,
@@ -113,7 +119,7 @@ export default class AssetService implements Service {
 
   public async deleteAssetPack(id: string, creator: User): Promise<void> {
     try {
-      await this.assetPackDb.deleteByField({ _id: new ObjectId(id), createdBy: new ObjectId(creator.id) });
+      await this.assetPackCollection.deleteByField({ _id: new ObjectId(id), createdBy: new ObjectId(creator.id) });
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR, error as Error);
     }

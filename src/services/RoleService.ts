@@ -41,6 +41,10 @@ export default class RoleService implements Service {
     return this.roleDb.deleteById(roleId);
   }
 
+  public async updateRole(roleId: ObjectId, updatePayload: Partial<Role>): Promise<Role> {
+    return this.roleDb.findOneAndUpdate({ _id: roleId }, updatePayload, { new: true });
+  }
+
   public async addUserToRole(userToAdd: ObjectId, roleId: ObjectId): Promise<void> {
     //TODO
   }

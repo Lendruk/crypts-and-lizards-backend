@@ -1,13 +1,17 @@
 import { AssetPackCollection } from "../models/Assets/AssetPack";
 import { ResourceTemplateCollection } from "../models/Assets/ResourceTemplate";
 import { User } from "../models/User";
-import { createModelMock, createQueryMockReturn, TypedJestMock } from "../test/utils/testUtils";
+import { createModelMock, createQueryMockReturn, createTypedMock, TypedJestMock } from "../test/utils/testUtils";
 import AssetService from "./AssetService";
+import PermissionService from "./PermissionService";
+import RoleService from "./RoleService";
 
 describe("AssetService", () => {
   let cut: AssetService;
   let assetPackDbMock: TypedJestMock<AssetPackCollection>;
   let resourceTemplateCollectionMock: TypedJestMock<ResourceTemplateCollection>;
+  let roleServiceMock: TypedJestMock<RoleService>;
+  let permissionServiceMock: TypedJestMock<PermissionService>;
   let objectIdFactoryMock: jest.Mock;
 
   const MOCK_USER: User = {
@@ -37,8 +41,16 @@ describe("AssetService", () => {
   beforeEach(() => {
     objectIdFactoryMock = jest.fn();
     assetPackDbMock = createModelMock();
+    roleServiceMock = createTypedMock(["createRole"]);
+    permissionServiceMock = createTypedMock(["createPermissionGroup"]);
     resourceTemplateCollectionMock = createModelMock();
-    cut = new AssetService(assetPackDbMock as any, resourceTemplateCollectionMock as any, objectIdFactoryMock as any);
+    cut = new AssetService(
+      assetPackDbMock as any,
+      resourceTemplateCollectionMock as any,
+      objectIdFactoryMock as any,
+      roleServiceMock as any,
+      permissionServiceMock as any
+    );
   });
 
   describe("getMyAssets", () => {
