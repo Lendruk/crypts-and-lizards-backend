@@ -19,7 +19,10 @@ class ModelModule {
         .to(AssetPackCollection)
         .inSingletonScope()
         .whenTargetNamed("AssetPackCollection");
-      bind<CampaignCollection>(TYPES.Model).to(CampaignCollection).inSingletonScope().whenTargetNamed("CampaignDb");
+      bind<CampaignCollection>(TYPES.Model)
+        .to(CampaignCollection)
+        .inSingletonScope()
+        .whenTargetNamed("CampaignCollection");
       bind<PermissionCollection>(TYPES.Model)
         .to(PermissionCollection)
         .inSingletonScope()
@@ -28,7 +31,7 @@ class ModelModule {
         .to(PermissionGroupCollection)
         .inSingletonScope()
         .whenTargetNamed("PermissionGroupCollection");
-      bind<RoleCollection>(TYPES.Model).to(RoleCollection).inSingletonScope().whenTargetNamed("RoleDb");
+      bind<RoleCollection>(TYPES.Model).to(RoleCollection).inSingletonScope().whenTargetNamed("RoleCollection");
       bind<ResourceTemplateCollection>(TYPES.Model)
         .to(ResourceTemplateCollection)
         .inSingletonScope()

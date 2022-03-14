@@ -12,12 +12,12 @@ import UserService from "./UserService";
 @injectable()
 export default class CampaignService extends UserManagedService {
   public constructor(
-    @inject(TYPES.Model) @named("CampaignDb") private campaignDb: CampaignCollection,
+    @inject(TYPES.Model) @named("CampaignCollection") private campaignCollection: CampaignCollection,
     @inject(TYPES.Service) @named("UserService") private userService: UserService,
     @inject(TYPES.Service) @named("RoleService") protected roleService: RoleService,
     @inject(TYPES.Service) @named("PermissionService") protected permissionService: PermissionService
   ) {
-    super(roleService, permissionService, campaignDb);
+    super(roleService, permissionService, campaignCollection);
   }
 
   public async start(): Promise<void> {
@@ -26,7 +26,7 @@ export default class CampaignService extends UserManagedService {
 
   public async getMyCampaigns(user: User): Promise<Campaign[]> {
     try {
-      const campaigns = await this.campaignDb.queryByField({ createdBy: user.id });
+      const campaigns = await this.campaignCollection.queryByField({ createdBy: user.id });
 
       return campaigns;
     } catch (error) {
@@ -40,7 +40,7 @@ export default class CampaignService extends UserManagedService {
       const editorRole = await this.roleService.createDefaultRole("Editor", "campaignOwner");
       const viewerRole = await this.roleService.createDefaultRole("Viewer", "campaignOwner");
 
-      const newCampaign = await this.campaignDb.save({
+      const newCampaign = await this.campaignCollection.save({
         createdBy: user.id,
         title,
         roles: [editorRole.id, viewerRole.id, ownerRole.id],
@@ -53,7 +53,9 @@ export default class CampaignService extends UserManagedService {
 
   public async updateCampaign(campaignId: ObjectId, updatePayload: Partial<Campaign>): Promise<Campaign> {
     try {
-      const updatedCampaign = await this.campaignDb.findOneAndUpdate({ _id: campaignId }, updatePayload, { new: true });
+      const updatedCampaign = await this.campaignCollection.findOneAndUpdate({ _id: campaignId }, updatePayload, {
+        new: true,
+      });
       return updatedCampaign;
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR, error as Error);
@@ -61,7 +63,7 @@ export default class CampaignService extends UserManagedService {
   }
 
   public async deleteCampaign(campaignId: ObjectId): Promise<void> {
-    const campaign = await this.campaignDb.findOne({ _id: campaignId });
+    const campaign = await this.campaignCollection.findOne({ _id: campaignId });
     const roles = campaign?.roles;
 
     if (roles) {
@@ -70,6 +72,6 @@ export default class CampaignService extends UserManagedService {
       }
     }
 
-    return this.campaignDb.deleteById(campaignId);
+    return this.campaignCollection.deleteById(campaignId);
   }
 }

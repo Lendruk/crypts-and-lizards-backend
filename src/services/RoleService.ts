@@ -9,12 +9,12 @@ import PermissionService from "./PermissionService";
 @injectable()
 export default class RoleService implements Service {
   public constructor(
-    @inject(TYPES.Model) @named("RoleDb") private roleDb: RoleCollection,
+    @inject(TYPES.Model) @named("RoleCollection") private roleCollection: RoleCollection,
     @inject(TYPES.Service) @named("PermissionService") private permissionService: PermissionService
   ) {}
 
   public async createRole(roleName: string, groups: string[], permissions: string[]): Promise<Role> {
-    const role = await this.roleDb.save({ name: roleName }, { groups, permissions });
+    const role = await this.roleCollection.save({ name: roleName }, { groups, permissions });
     return role;
   }
 
@@ -25,12 +25,12 @@ export default class RoleService implements Service {
       throw new ServerException(Errors.RESOURCE_NOT_FOUND, "Permission Group not found");
     }
 
-    const role = await this.roleDb.save({ name: roleName, groups: [permissionGroup.id] });
+    const role = await this.roleCollection.save({ name: roleName, groups: [permissionGroup.id] });
     return role;
   }
 
   public async getRole(roleId: ObjectId): Promise<Role> {
-    const role = await this.roleDb.queryOne({ _id: roleId }).populate("groups", "permissions");
+    const role = await this.roleCollection.queryOne({ _id: roleId }).populate("groups", "permissions");
     if (!role) {
       throw new ServerException(Errors.NOT_FOUND);
     }
@@ -38,11 +38,11 @@ export default class RoleService implements Service {
   }
 
   public async deleteRole(roleId: ObjectId): Promise<void> {
-    return this.roleDb.deleteById(roleId);
+    return this.roleCollection.deleteById(roleId);
   }
 
   public async updateRole(roleId: ObjectId, updatePayload: Partial<Role>): Promise<Role> {
-    return this.roleDb.findOneAndUpdate({ _id: roleId }, updatePayload, { new: true });
+    return this.roleCollection.findOneAndUpdate({ _id: roleId }, updatePayload, { new: true });
   }
 
   public async addUserToRole(userToAdd: ObjectId, roleId: ObjectId): Promise<void> {

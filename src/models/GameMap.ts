@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import { Vector2 } from "../types/Vector2";
 import { ObjectId } from "../utils/ObjectId";
-import AssetPack from "./Assets/AssetPack";
+import { AssetPack } from "./Assets/AssetPack";
 import Tag from "./Tag";
 import { User } from "./User";
 
