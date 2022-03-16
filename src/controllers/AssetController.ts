@@ -43,7 +43,8 @@ export default class AssetController implements Controller {
       params: { id },
     } = req;
     try {
-      const maps = await this.mapService.getMapsForPack(user, id);
+      // const maps = await this.mapService.getMapsForPack(user, id);
+      const maps = [];
       res.status(200).json(maps);
     } catch (error) {
       throw new ServerException(Errors.SERVER_ERROR, error as Error);

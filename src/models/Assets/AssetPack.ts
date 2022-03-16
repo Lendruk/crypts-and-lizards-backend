@@ -4,7 +4,7 @@ import AbstractModel from "../../types/AbstractModel";
 import { ObjectId } from "../../utils/ObjectId";
 import { PermissionGroup, PermissionGroupCollection } from "../Permission";
 import { RoleCollection } from "../Role";
-import Tag from "../Tag";
+import { Tag, TagCollection } from "../Tag";
 import { User, UserCollection } from "../User";
 import { Asset } from "./Asset";
 
@@ -27,7 +27,7 @@ export class AssetPackCollection extends AbstractModel<AssetPack, AssetPackModel
   public constructor() {
     super({
       title: { type: String },
-      tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
+      tags: [{ type: Schema.Types.ObjectId, ref: TagCollection }],
       description: { type: String, default: "" },
       assets: [{ type: ObjectId, ref: "assets" }],
       createdBy: { type: Schema.Types.ObjectId, ref: UserCollection },

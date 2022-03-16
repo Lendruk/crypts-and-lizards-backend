@@ -1,13 +1,16 @@
-import { model, Schema } from "mongoose";
+import { Document } from "mongoose";
+import AbstractModel from "../types/AbstractModel";
 
-interface Tag {
+export interface Tag {
   name: string;
-  _id: string;
+  id?: any;
 }
 
-const TagSchema = new Schema<Tag>({
-  name: { type: String },
-});
-
-const Tag = model<Tag>("Tag", TagSchema);
-export default Tag;
+interface TagModel extends Tag, Document {}
+export class TagCollection extends AbstractModel<Tag, TagModel> {
+  public constructor() {
+    super({
+      name: { type: String },
+    });
+  }
+}
