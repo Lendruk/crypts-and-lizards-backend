@@ -13,6 +13,8 @@ import {
   IndexDefinition,
   HydratedDocument,
   Query,
+  PipelineStage,
+  Aggregate,
 } from "mongoose";
 import { ObjectId } from "../utils/ObjectId";
 
@@ -90,6 +92,10 @@ export default abstract class AbstractModel<ModelData, DbModel extends Document>
     DbModel
   > {
     return this.Model.findOne(filter);
+  }
+
+  public async aggregate(pipeline?: PipelineStage[] | undefined): Promise<Aggregate<Array<DbModel>>> {
+    return this.Model.aggregate(pipeline);
   }
 
   public async save(

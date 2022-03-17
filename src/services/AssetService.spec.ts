@@ -1,5 +1,6 @@
 import { AssetPackCollection } from "../models/Assets/AssetPack";
 import { ResourceTemplateCollection } from "../models/Assets/ResourceTemplate";
+import { TagCollection } from "../models/Tag";
 import { User } from "../models/User";
 import { createModelMock, createQueryMockReturn, createTypedMock, TypedJestMock } from "../test/utils/testUtils";
 import AssetService from "./AssetService";
@@ -12,6 +13,7 @@ describe("AssetService", () => {
   let resourceTemplateCollectionMock: TypedJestMock<ResourceTemplateCollection>;
   let roleServiceMock: TypedJestMock<RoleService>;
   let permissionServiceMock: TypedJestMock<PermissionService>;
+  let tagCollectionMock: TypedJestMock<TagCollection>;
   let objectIdFactoryMock: jest.Mock;
 
   const MOCK_USER: User = {
@@ -41,6 +43,7 @@ describe("AssetService", () => {
   beforeEach(() => {
     objectIdFactoryMock = jest.fn();
     assetPackDbMock = createModelMock();
+    tagCollectionMock = createModelMock();
     roleServiceMock = createTypedMock(["createRole"]);
     permissionServiceMock = createTypedMock(["createPermissionGroup"]);
     resourceTemplateCollectionMock = createModelMock();
@@ -49,7 +52,8 @@ describe("AssetService", () => {
       resourceTemplateCollectionMock as any,
       objectIdFactoryMock as any,
       roleServiceMock as any,
-      permissionServiceMock as any
+      permissionServiceMock as any,
+      tagCollectionMock as any
     );
   });
 

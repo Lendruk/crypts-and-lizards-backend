@@ -3,7 +3,7 @@ import { Errors, ServerException } from "../error-handling/ErrorCodes";
 import { TYPES } from "../ioc/Types";
 import { AssetPack, AssetPackCollection } from "../models/Assets/AssetPack";
 import { ResourceField, ResourceTemplate, ResourceTemplateCollection } from "../models/Assets/ResourceTemplate";
-import Tag from "../models/Tag";
+import { Tag, TagCollection } from "../models/Tag";
 import { User } from "../models/User";
 import { Factory } from "../types/Factory";
 import { ObjectId } from "../utils/ObjectId";
@@ -24,7 +24,8 @@ export default class AssetService extends UserManagedService {
     @inject(TYPES.Model) @named("ResourceTemplateDb") private resourceTemplateDb: ResourceTemplateCollection,
     @inject(TYPES.ObjectId) private objectIdFactory: Factory<string, ObjectId>,
     @inject(TYPES.Service) @named("RoleService") protected roleService: RoleService,
-    @inject(TYPES.Service) @named("PermissionService") protected permissionService: PermissionService
+    @inject(TYPES.Service) @named("PermissionService") protected permissionService: PermissionService,
+    @inject(TYPES.Model) @named("TagCollection") private tagCollection: TagCollection
   ) {
     super(roleService, permissionService, assetPackCollection);
   }
@@ -71,11 +72,10 @@ export default class AssetService extends UserManagedService {
       const finalTagPayload: Tag[] = [];
       if (updatePayload.tags) {
         for (const tag of updatePayload.tags) {
-          if (tag._id) {
+          if (tag.id) {
             finalTagPayload.push(tag);
           } else {
-            const newTag = new Tag({ name: tag.name });
-            await newTag.save();
+            const newTag = await this.tagCollection.save({ name: tag.name });
             finalTagPayload.push(newTag);
           }
         }

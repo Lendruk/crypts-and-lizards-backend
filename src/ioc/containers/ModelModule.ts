@@ -2,8 +2,10 @@ import { ContainerModule, interfaces } from "inversify";
 import { AssetPackCollection } from "../../models/Assets/AssetPack";
 import { ResourceTemplateCollection } from "../../models/Assets/ResourceTemplate";
 import { CampaignCollection } from "../../models/Campaign";
+import { MapTemplateCollection } from "../../models/MapTemplate";
 import { PermissionCollection, PermissionGroupCollection } from "../../models/Permission";
 import { RoleCollection } from "../../models/Role";
+import { TagCollection } from "../../models/Tag";
 import { TokenCollection } from "../../models/Token";
 import { UserCollection } from "../../models/User";
 import { TYPES } from "../Types";
@@ -36,6 +38,11 @@ class ModelModule {
         .to(ResourceTemplateCollection)
         .inSingletonScope()
         .whenTargetNamed("ResourceTemplateDb");
+      bind<MapTemplateCollection>(TYPES.Model)
+        .to(MapTemplateCollection)
+        .inSingletonScope()
+        .whenTargetNamed("MapTemplateCollection");
+      bind<TagCollection>(TYPES.Model).to(TagCollection).inSingletonScope().whenTargetNamed("TagCollection");
     });
   }
 

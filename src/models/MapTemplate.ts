@@ -1,4 +1,4 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, Schema } from "mongoose";
 import AbstractModel from "../types/AbstractModel";
 import { Vector2 } from "../types/Vector2";
 import { ObjectId } from "../utils/ObjectId";
@@ -6,7 +6,7 @@ import { AssetPack, AssetPackCollection } from "./Assets/AssetPack";
 import { Tag, TagCollection } from "./Tag";
 import { User, UserCollection } from "./User";
 
-type MapObjectType = "PROP";
+type MapObjectType = "PROP" | "TEXTURE";
 
 /**
  * Interface for a map template do not confuse with active game maps
@@ -16,21 +16,20 @@ export interface MapTemplate {
   description: string;
   tags: Tag[];
   mapLayers: MapLayer[];
-  createdBy: User;
-  assetPacks: AssetPack[];
+  createdBy: User | ObjectId;
+  assetPacks: AssetPack[] | ObjectId[];
 }
 
 interface MapObject {
   type: MapObjectType;
   position: Vector2;
-  objectId: ObjectId;
+  id: ObjectId;
 }
 
 interface MapLayer {
   name: string;
   position: number;
   mapObjects: MapObject[];
-  visibleTo: User[];
 }
 
 interface MapTemplateModel extends MapTemplate, Document {}
@@ -52,9 +51,10 @@ export class MapTemplateCollection extends AbstractModel<MapTemplate, MapTemplat
                 x: { type: Number },
                 y: { type: Number },
               },
+              type: { type: String, enum: ["PROP", "TEXTURE"] },
+              id: { type: ObjectId },
             },
           ],
-          visibleTo: [{ type: Schema.Types.ObjectId, ref: UserCollection }],
         },
       ],
     });
